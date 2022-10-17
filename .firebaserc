@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "mantessecretsanta": {
+      "hosting": {
+        "MantesSecretSanta": [
+          "mantessecretsanta"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "mantessecretsanta"
+  }
+}

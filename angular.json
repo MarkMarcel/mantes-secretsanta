@@ -100,8 +100,21 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "MantesSecretSanta:build:production",
+            "firebaseProject": "mantessecretsanta",
+            "firebaseHostingSite": "mantessecretsanta"
+          }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "cd18b720-085f-49c3-b365-ec7cb08d69d3"
   }
 }
