@@ -1,0 +1,30 @@
+<form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+    <mat-card>
+        <mat-card-title>Authentication</mat-card-title>
+        <mat-card-content>
+            <ngx-intl-tel-input
+                    [cssClass]="''"
+                    [enableAutoCountrySelect]="true"
+                    [enablePlaceholder]="true"
+                    [selectedCountryISO]="CountryISO.Ghana"
+                    [maxLength]="15"
+                    [phoneValidation]="true"
+                    [separateDialCode]="false"
+                    [onlyCountries]="[CountryISO.Ghana,CountryISO.UnitedStates,CountryISO.UnitedKingdom,CountryISO.Germany]"
+                    [numberFormat]="PhoneNumberFormat.National"
+                    name="phoneNumber"
+                    formControlName="phoneNumber"
+                    inputId="phone_number"
+                  >
+                  </ngx-intl-tel-input>
+                  <mat-form-field appearance="legacy">
+                    <input matInput formControlName="code" placeholder="Enter code received">
+                  </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+          <button id="test" mat-button type="submit">Sign In</button>
+        </mat-card-actions>
+      </mat-card>
+</form>
+
+
