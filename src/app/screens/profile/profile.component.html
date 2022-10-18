@@ -1,0 +1,23 @@
+<div class="mdc-layout-grid">
+    <div class="mdc-layout-grid__inner">
+        <mat-form-field class="mdc-layout-grid__cell" appearance="standard">
+            <mat-label>Name</mat-label>
+            <input matInput />
+        </mat-form-field>
+    </div>
+    <div class="mdc-layout-grid__inner">
+        <p class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">Are you married?</p>
+        <mat-radio-group class="mdc-layout-grid__cell" aria-label="Are you married?">
+            <mat-radio-button value="1">No</mat-radio-button>
+            <mat-radio-button value="2">Yes</mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <div class="mdc-layout-grid__inner">
+        <mat-form-field class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" appearance="standard">
+            <mat-label>Your children</mat-label>
+            <mat-select multiple>
+              <mat-option *ngFor="let child of children" [value]="child.id">{{child.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+    </div>
+</div>
