@@ -1,23 +1,51 @@
-<div class="mdc-layout-grid">
-    <div class="mdc-layout-grid__inner">
-        <mat-form-field class="mdc-layout-grid__cell" appearance="standard">
-            <mat-label>Name</mat-label>
-            <input matInput />
+<div *ngIf="isLoading" style="width: 25px; margin: auto;" >
+    <mat-spinner [diameter]="25" [strokeWidth]="3" style="width: 30px; display: inline;"></mat-spinner>
+</div>
+<form *ngIf="!isLoading" [formGroup]="detailsForm" style="max-width: 350px;" class="mdc-layout-grid">
+    <header class="mdc-layout-grid__inner">
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Sort Out Your Details</h1>
+    </header>
+    <div *ngIf="(step >= 1)" class="mdc-layout-grid__inner">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">What does everyone in the family call you?</p>
+        <mat-form-field class="mdc-layout-grid__cell--span-12" appearance="standard">
+            <input matInput formControlName="name" placeholder="Name" />
         </mat-form-field>
     </div>
-    <div class="mdc-layout-grid__inner">
+    <div *ngIf="(step >= 2)" class="mdc-layout-grid__inner">
         <p class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">Are you married?</p>
-        <mat-radio-group class="mdc-layout-grid__cell" aria-label="Are you married?">
-            <mat-radio-button value="1">No</mat-radio-button>
-            <mat-radio-button value="2">Yes</mat-radio-button>
+        <mat-radio-group formControlName="isMarried" class="mdc-layout-grid__cell" aria-label="Are you married?">
+            <mat-radio-button value=false>No</mat-radio-button>
+            <mat-radio-button value=true>Yes</mat-radio-button>
         </mat-radio-group>
     </div>
-    <div class="mdc-layout-grid__inner">
-        <mat-form-field class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" appearance="standard">
-            <mat-label>Your children</mat-label>
-            <mat-select multiple>
-              <mat-option *ngFor="let child of children" [value]="child.id">{{child.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+    <div  *ngIf="(step >= 3) && !hasAnsweredHasChildren" class="mdc-layout-grid__inner">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Do you have children under 10 years?</p>
+        <span class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button (click)="setHasChildren(false)">No</button>
+            <button type="button" mat-flat-button (click)="setHasChildren(true)">Yes</button>
+        </span>
     </div>
-</div>
+    <div *ngIf="(step >= 3) && hasChildren" class="mdc-layout-grid__inner">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Select your children</p>
+        <mat-form-field class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" appearance="standard">
+            <mat-select multiple formControlName="children">
+                <mat-option *ngFor="let child of children" [value]="child.id">{{child.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-grid-list cols="2" class="mdc-layout-grid__cell--span-12">
+            <mat-grid-tile *ngFor="let child of myChildren" >
+                <app-child [child]="child"></app-child>
+            </mat-grid-tile>
+          </mat-grid-list>
+    </div>
+    <div class="mdc-layout-grid__inner">
+        <p *ngIf="(step <= 2)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-icon-button aria-label="Next question" (click)="nextQuestion()">
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
+        </p>
+        <p *ngIf="(step >= 3) && hasAnsweredHasChildren" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button color="accent" aria-label="Done" (click)="updateUserDetails()">Done</button>
+        </p>
+    </div>
+</form>

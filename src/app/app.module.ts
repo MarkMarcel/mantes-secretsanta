@@ -14,17 +14,18 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatGridListModule} from '@angular/material/grid-list';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFireModule } from '@angular/fire/compat';
 import { ProfileComponent } from './screens/profile/profile.component';
 import { HomeComponent } from './screens/home/home.component';
 import { SecretSantaExchangeComponent } from './screens/secret-santa-exchange/secret-santa-exchange.component';
 import { SignInComponent } from './screens/sign-in/sign-in.component';
+import { ChildComponent } from './widgets/child/child.component';
+import { CreateSecretSantaExchangeComponent } from './screens/create-secret-santa-exchange/create-secret-santa-exchange.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,8 @@ import { SignInComponent } from './screens/sign-in/sign-in.component';
     HomeComponent,
     SecretSantaExchangeComponent,
     SignInComponent,
+    ChildComponent,
+    CreateSecretSantaExchangeComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,6 +48,7 @@ import { SignInComponent } from './screens/sign-in/sign-in.component';
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
@@ -52,8 +56,6 @@ import { SignInComponent } from './screens/sign-in/sign-in.component';
     MatSelectModule,
     NgxIntlTelInputModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp((environment as any).firebaseConfig),
-    AngularFireAuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]

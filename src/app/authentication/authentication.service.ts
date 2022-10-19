@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth, } from '@angular/fire/compat/auth';
-import { RecaptchaVerifier } from '@angular/fire/auth';
-import firebase from 'firebase/compat/app';
+import { ConfirmationResult, getAuth, RecaptchaVerifier, signInWithPhoneNumber,signOut } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
+  readonly auth = getAuth()
 
-  constructor(private authenticator: AngularFireAuth) { }
+  constructor() { }
 
   async signOut(): Promise<void> {
-    return await this.authenticator.signOut()
+    return await signOut(this.auth)
   }
 
-  async requestOTP(phoneNumber: string, verifier: RecaptchaVerifier): Promise<firebase.auth.ConfirmationResult> {
-    return await this.authenticator.signInWithPhoneNumber(phoneNumber, verifier)
+  async requestOTP(phoneNumber: string, verifier: RecaptchaVerifier): Promise<ConfirmationResult> {
+    return await signInWithPhoneNumber(this.auth,phoneNumber, verifier)
   }
 
 }

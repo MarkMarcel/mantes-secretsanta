@@ -4,17 +4,24 @@ import { HomeComponent } from './screens/home/home.component';
 import { ProfileComponent } from './screens/profile/profile.component';
 import { SecretSantaExchangeComponent } from './screens/secret-santa-exchange/secret-santa-exchange.component';
 import { SignInComponent } from './screens/sign-in/sign-in.component';
-import { AngularFireAuthGuard, hasCustomClaim, redirectUnauthorizedTo, } from '@angular/fire/compat/auth-guard';
+import { AuthGuard, hasCustomClaim, redirectUnauthorizedTo, } from '@angular/fire/auth-guard';
 
 
 const adminOnly = () => hasCustomClaim('admin');
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['auth']);
 
+export const RoutePaths = {
+  'home':'',
+  'auth':'auth',
+  'profile':'profile',
+  'secretSantaExchange':'secret-santa-exchange',
+}
+
 const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
-  { path: 'auth', component: SignInComponent },
-  { path: 'profile', component: ProfileComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
-  { path: 'secret-santa-exchange', component: SecretSantaExchangeComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: adminOnly } },
+  { path: RoutePaths.home, component: HomeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
+  { path: RoutePaths.auth, component: SignInComponent },
+  { path: RoutePaths.profile, component: ProfileComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
+  { path: RoutePaths.secretSantaExchange, component: SecretSantaExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: adminOnly } },
 ];
 
 @NgModule({
