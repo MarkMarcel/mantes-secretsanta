@@ -5,6 +5,7 @@ import { ProfileComponent } from './screens/profile/profile.component';
 import { SecretSantaExchangeComponent } from './screens/secret-santa-exchange/secret-santa-exchange.component';
 import { SignInComponent } from './screens/sign-in/sign-in.component';
 import { AuthGuard, hasCustomClaim, redirectUnauthorizedTo, } from '@angular/fire/auth-guard';
+import { CreateSecretSantaExchangeComponent } from './screens/create-secret-santa-exchange/create-secret-santa-exchange.component';
 
 
 const adminOnly = () => hasCustomClaim('admin');
@@ -17,8 +18,8 @@ export const RoutePaths = {
   'secretSantaExchange':'secret-santa-exchange',
 }
 
-const routes: Routes = [
-  { path: RoutePaths.home, component: HomeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
+const routes: Routes = [ 
+  { path: RoutePaths.home, component: CreateSecretSantaExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: RoutePaths.auth, component: SignInComponent },
   { path: RoutePaths.profile, component: ProfileComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: RoutePaths.secretSantaExchange, component: SecretSantaExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: adminOnly } },

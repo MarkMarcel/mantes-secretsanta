@@ -20,6 +20,16 @@ export class UserService {
     this._usersCollection = collection(firestore, FirestoreCollectionPaths.users);
   }
 
+  async getAllChildren(): Promise<Child[]> {
+    const data = await getDocs(query(this._childrenCollection).withConverter(childConverter));
+    return data.docs.map(doc => doc.data()).sort((child1,child2) => child1.name.localeCompare(child2.name));
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    const data = await getDocs(query(this._usersCollection).withConverter(userConverter));
+    return data.docs.map(doc => doc.data()).sort((user1,user2) => user1.name.localeCompare(user2.name))
+  }
+
   async getChild(childId: string): Promise<Child | null> {
     const child = await getDoc(doc(this._childrenCollection, childId).withConverter(childConverter));
     if (child.exists()) {
@@ -27,11 +37,6 @@ export class UserService {
     } else {
       return null;
     }
-  }
-
-  async getAllChildren(): Promise<Child[]> {
-    const data = await getDocs(query(this._childrenCollection).withConverter(childConverter))
-    return data.docs.map(doc => doc.data()).sort((child1,child2) => child1.name.localeCompare(child2.name))
   }
 
   async getUserDetails(userId: string): Promise<boolean> {
