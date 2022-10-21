@@ -1,7 +1,9 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ExchangeService } from 'src/app/exchange/exchange.service';
 import { UserService } from 'src/app/user/user.service';
 import { Child } from 'src/models/child';
+import { Exchange } from 'src/models/exchange';
 import { User } from 'src/models/user';
 
 enum State{
@@ -31,7 +33,7 @@ export class CreateSecretSantaExchangeComponent implements AfterViewInit {
     membersToBuyForChildren: new FormControl<string[]>([], Validators.compose([Validators.required,Validators.minLength(1)])),
   });
 
-  constructor(private userService:UserService) { }
+  constructor(private exchangeService:ExchangeService,private userService:UserService) { }
 
   ngAfterViewInit(): void {
     this.setup();
@@ -45,7 +47,14 @@ export class CreateSecretSantaExchangeComponent implements AfterViewInit {
   }
 
   async createExchange(){
-
+    this.isLoading = true
+    const buyingForChildren = this.manteSecretSantaExchangeForm.controls.membersToBuyForChildren.value!!;
+    const numberOfGifts = this.manteSecretSantaExchangeForm.controls.numberOfGifts.value!!;
+    const participatingChildren = this.manteSecretSantaExchangeForm.controls.children.value!!;
+    const participatingFamilyMembers = this.manteSecretSantaExchangeForm.controls.participating.value!!;
+    const exchange = new Exchange('',buyingForChildren,parseInt(numberOfGifts),participatingChildren,participatingFamilyMembers,this.year);
+    await this.exchangeService.saveExchangeDetails(exchange);
+    this.isLoading = false;
   }
 
   editForm(){
