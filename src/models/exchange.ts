@@ -7,7 +7,7 @@ export class Exchange {
         public readonly numberOfGiftsPerFamilyMember: number,
         public readonly participatingChildren: string[],
         public readonly participatingFamilyMembers: string[],
-        public readonly year: number,
+        public readonly year: string,
     ) { }
 }
 
@@ -24,12 +24,13 @@ export const exchangeConverter = {
     },
     fromFirestore: (snapshot:QueryDocumentSnapshot, options:SnapshotOptions) => {
         const data = snapshot.data(options);
+        console.debug(data)
         return new Exchange(
             data['id'] ?? '',
             data['familyMembersBuyingForChildren'],
             data['numOfGifts'],
-            data['participatingMembers'],
             data['participatingChildren'],
+            data['participatingMembers'],
             data['year']
         );
     }

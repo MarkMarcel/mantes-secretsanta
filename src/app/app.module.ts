@@ -18,25 +18,24 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
+import {MatMenuModule} from '@angular/material/menu';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
 import { ProfileComponent } from './screens/profile/profile.component';
 import { HomeComponent } from './screens/home/home.component';
-import { SecretSantaExchangeComponent } from './screens/secret-santa-exchange/secret-santa-exchange.component';
 import { SignInComponent } from './screens/sign-in/sign-in.component';
 import { ChildComponent } from './widgets/child/child.component';
-import { CreateSecretSantaExchangeComponent } from './screens/create-secret-santa-exchange/create-secret-santa-exchange.component';
+import { SetupExchangeComponent } from './screens/setup-exchange/setup-exchange.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProfileComponent,
     HomeComponent,
-    SecretSantaExchangeComponent,
     SignInComponent,
     ChildComponent,
-    CreateSecretSantaExchangeComponent,
+    SetupExchangeComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +52,7 @@ import { CreateSecretSantaExchangeComponent } from './screens/create-secret-sant
     MatIconModule,
     MatInputModule,
     MatListModule,
+    MatMenuModule,
     MatProgressSpinnerModule,
     MatRadioModule,
     MatSelectModule,

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ExchangeService } from 'src/app/exchange/exchange.service';
 import { UserService } from 'src/app/user/user.service';
 import { Child } from 'src/models/child';
@@ -11,14 +12,15 @@ enum State{
 }
 
 @Component({
-  selector: 'app-create-secret-santa-exchange',
-  templateUrl: './create-secret-santa-exchange.component.html',
-  styleUrls: ['./create-secret-santa-exchange.component.scss']
+  selector: 'app-setup-exchange',
+  templateUrl: './setup-exchange.component.html',
+  styleUrls: ['./setup-exchange.component.scss']
 })
-export class CreateSecretSantaExchangeComponent implements AfterViewInit {
+export class SetupExchangeComponent implements AfterViewInit {
   children: Child[] = [];
   familyMembers:User[] = [];
   isLoading = true;
+  maxNumOfGifts = 0;
   numGiftsPerChild = 0;
   participatingChildren: Child[] = [];
   participatingFamilyMembers:User[] = [];
@@ -33,7 +35,11 @@ export class CreateSecretSantaExchangeComponent implements AfterViewInit {
     membersToBuyForChildren: new FormControl<string[]>([], Validators.compose([Validators.required,Validators.minLength(1)])),
   });
 
-  constructor(private exchangeService:ExchangeService,private userService:UserService) { }
+  constructor(
+    private exchangeService:ExchangeService,
+    private router:Router,
+    private userService:UserService
+    ) { }
 
   ngAfterViewInit(): void {
     this.setup();
@@ -52,9 +58,10 @@ export class CreateSecretSantaExchangeComponent implements AfterViewInit {
     const numberOfGifts = this.manteSecretSantaExchangeForm.controls.numberOfGifts.value!!;
     const participatingChildren = this.manteSecretSantaExchangeForm.controls.children.value!!;
     const participatingFamilyMembers = this.manteSecretSantaExchangeForm.controls.participating.value!!;
-    const exchange = new Exchange('',buyingForChildren,parseInt(numberOfGifts),participatingChildren,participatingFamilyMembers,this.year);
+    const exchange = new Exchange('',buyingForChildren,parseInt(numberOfGifts),participatingChildren,participatingFamilyMembers,this.year.toString());
     await this.exchangeService.saveExchangeDetails(exchange);
     this.isLoading = false;
+    this.router.navigate(['']);
   }
 
   editForm(){
@@ -98,6 +105,7 @@ export class CreateSecretSantaExchangeComponent implements AfterViewInit {
   private async setup(){
     this.familyMembers = await this.userService.getAllUsers();
     this.children = await this.userService.getAllChildren();
+    this.maxNumOfGifts = this.familyMembers.length - 1;
     this.isLoading = false;
   }
 }

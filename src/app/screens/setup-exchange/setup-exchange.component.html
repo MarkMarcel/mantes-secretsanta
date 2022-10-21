@@ -8,7 +8,7 @@
     <div *ngIf="(step == 1)" class="mdc-layout-grid__inner">
         <p class="mdc-layout-grid__cell--span-12 mat-body-1">How many gifts per person?</p>
         <mat-form-field class="mdc-layout-grid__cell--span-12" appearance="standard">
-            <input type="number" formControlName="numberOfGifts" matInput placeholder="0" />
+            <input type="number" [max]="maxNumOfGifts" formControlName="numberOfGifts" matInput placeholder="0" />
         </mat-form-field>
     </div>
     <div *ngIf="(step == 2)" class="mdc-layout-grid__inner">

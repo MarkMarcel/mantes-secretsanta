@@ -1,1 +1,49 @@
-<p>home works!</p>
+<div *ngIf="isLoading" style="width: 25px; margin: auto;">
+    <mat-spinner [diameter]="25" [strokeWidth]="3" style="width: 30px; display: inline;"></mat-spinner>
+</div>
+<div *ngIf="!isLoading">
+    <div *ngIf="(exchanges.length < 1)" class="mdc-layout-grid">
+        <p style="text-align: center;">No exchanges have been created. Details will appear here once an exchange is
+            created</p>
+    </div>
+    <div *ngIf="(exchanges.length >= 1)">
+        <header>
+            <h1>
+                <span>{{selectedExchange?.year}}</span>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>expand_more</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item *ngFor="let exchange of exchanges"
+                        (click)="setExchange(exchange)">{{exchange.year}}</button>
+                </mat-menu>
+            </h1>
+        </header>
+        <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+                <h4 class="mdc-layout-grid__cell--span-12 subheading-2">Adults assigned to you</h4>
+                <div *ngIf="isLoadingAdults" class="mdc-layout-grid__cell--span-12">
+                    <div style="width: 25px;">
+                        <mat-spinner [diameter]="25" [strokeWidth]="3" style="width: 30px; display: inline;"></mat-spinner>
+                    </div>
+                </div>
+                <div *ngIf="!isLoadingAdults" class="mdc-layout-grid__cell--span-12">
+                    <mat-list role="list">
+                        <mat-list-item role="listitem" *ngFor="let adult of assignedAdults">{{adult.name}}</mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+            <div *ngIf="(assignedChild != null)" class="mdc-layout-grid__inner">
+                <h4 class="mdc-layout-grid__cell--span-12 subheading-2">Child assigned to you</h4>
+                <div *ngIf="isLoadingChild" class="mdc-layout-grid__cell--span-12">
+                    <div style="width: 25px;">
+                        <mat-spinner [diameter]="25" [strokeWidth]="3" style="width: 30px; display: inline;"></mat-spinner>
+                    </div>
+                </div>
+                <div *ngIf="!isLoadingChild" class="mdc-layout-grid__cell--span-12">
+                    <p>{{assignedChild.name}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
