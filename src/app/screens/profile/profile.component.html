@@ -66,8 +66,8 @@
     <div class="mdc-layout-grid__inner vertical-space">
         <p class="mdc-layout-grid__cell--span-12 mat-body">{{detailsForm.controls.name.value}}</p>
         <p class="mdc-layout-grid__cell--span-12 mat-body">
-            <span  *ngIf="detailsForm.controls.isMarried.value">Married</span>
-            <span  *ngIf="!(detailsForm.controls.isMarried.value)">Not married</span>
+            <span  *ngIf="(detailsForm.controls.isMarried.value) == 'true'">Married</span>
+            <span  *ngIf="(detailsForm.controls.isMarried.value) == 'false'">Not married</span>
         </p>
         <p class="mdc-layout-grid__cell--span-12 mat-body">
             <span *ngIf="hasChildren">Has</span>
