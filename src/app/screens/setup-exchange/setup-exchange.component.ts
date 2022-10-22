@@ -1,5 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { ExchangeService } from 'src/app/exchange/exchange.service';
 import { UserService } from 'src/app/user/user.service';
@@ -36,9 +37,10 @@ export class SetupExchangeComponent implements AfterViewInit {
   });
 
   constructor(
-    private exchangeService:ExchangeService,
-    private router:Router,
-    private userService:UserService
+    private _exchangeService:ExchangeService,
+    private _router:Router,
+    private _snackbar:MatSnackBar,
+    private _userService:UserService
     ) { }
 
   ngAfterViewInit(): void {
@@ -52,16 +54,21 @@ export class SetupExchangeComponent implements AfterViewInit {
     this.step--;
   }
 
-  async createExchange(){
-    this.isLoading = true
-    const buyingForChildren = this.manteSecretSantaExchangeForm.controls.membersToBuyForChildren.value!!;
-    const numberOfGifts = this.manteSecretSantaExchangeForm.controls.numberOfGifts.value!!;
-    const participatingChildren = this.manteSecretSantaExchangeForm.controls.children.value!!;
-    const participatingFamilyMembers = this.manteSecretSantaExchangeForm.controls.participating.value!!;
-    const exchange = new Exchange('',buyingForChildren,parseInt(numberOfGifts),participatingChildren,participatingFamilyMembers,this.year.toString());
-    await this.exchangeService.saveExchangeDetails(exchange);
-    this.isLoading = false;
-    this.router.navigate(['']);
+  async setupExchange(){
+    if(this.isValidForm()){
+      this.isLoading = true
+      const buyingForChildren = this.manteSecretSantaExchangeForm.controls.membersToBuyForChildren.value!!;
+      const numberOfGifts = this.manteSecretSantaExchangeForm.controls.numberOfGifts.value!!;
+      const participatingChildren = this.manteSecretSantaExchangeForm.controls.children.value!!;
+      const participatingFamilyMembers = this.manteSecretSantaExchangeForm.controls.participating.value!!;
+      const exchange = new Exchange('',buyingForChildren,parseInt(numberOfGifts),participatingChildren,participatingFamilyMembers,this.year.toString());
+      await this._exchangeService.saveExchangeDetails(exchange);
+      this.isLoading = false;
+      this._router.navigate(['']);
+    }else{
+      this.editForm();
+      this._snackbar.open("fix errors")
+    }
   }
 
   editForm(){
@@ -77,7 +84,25 @@ export class SetupExchangeComponent implements AfterViewInit {
   }
 
   review(){
-    this.state = State.REVIEW;
+    if(this.isValidForm()){
+      this.state = State.REVIEW;
+    }else{
+      this.editForm();
+      this._snackbar.open("fix errors")
+    }
+  }
+
+  private isValidForm():boolean{
+    let isValid = this.manteSecretSantaExchangeForm.controls.numberOfGifts.valid;
+    if (this.manteSecretSantaExchangeForm.controls.participating.value!!.length < 1) {
+      this.manteSecretSantaExchangeForm.controls.participating.setErrors({ notMinLength: true });
+      isValid = isValid && this.manteSecretSantaExchangeForm.controls.participating.valid;
+    }
+    if ((this.participatingChildren.length > 0) && this.manteSecretSantaExchangeForm.controls.membersToBuyForChildren.value!!.length < this.participatingChildren.length) {
+      this.manteSecretSantaExchangeForm.controls.membersToBuyForChildren.setErrors({ notMinLength: true });
+      isValid = isValid && this.manteSecretSantaExchangeForm.controls.membersToBuyForChildren.valid;
+    }
+    return isValid;
   }
 
   private observeParticipatingChildren(){
@@ -103,8 +128,8 @@ export class SetupExchangeComponent implements AfterViewInit {
   }
 
   private async setup(){
-    this.familyMembers = await this.userService.getAllUsers();
-    this.children = await this.userService.getAllChildren();
+    this.familyMembers = await this._userService.getAllUsers();
+    this.children = await this._userService.getAllChildren();
     this.maxNumOfGifts = this.familyMembers.length - 1;
     this.isLoading = false;
   }

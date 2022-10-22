@@ -32,7 +32,8 @@ export class ExchangeService {
       const assignedAdults = this.assignAdults(familyMemberId,adults,exchange.numberOfGiftsPerFamilyMember);
       batch.update(doc(this.firestore, path), { 'assignedAdults': assignedAdults })
       if (exchange.familyMembersBuyingForChildren.includes(familyMemberId)) {
-        const assignedChild = this.assignChild(familyMemberId, children.filter(id => !(childrenOfThoseBuyingForChildren.get(familyMemberId)!!.includes(id))));
+        const eligibleChildren = children.filter(id => !(childrenOfThoseBuyingForChildren.get(familyMemberId)!!.includes(id)));
+        const assignedChild = (eligibleChildren.length > 0)?this.assignChild(eligibleChildren):null;
         children = children.filter(id => (id != assignedChild))
         batch.update(doc(this.firestore, path), { 'assignedChild': assignedChild })
       }
@@ -97,7 +98,7 @@ export class ExchangeService {
     return assigned;
   }
 
-  private assignChild(adultId: string, eligibleChildren: string[]): string {
+  private assignChild(eligibleChildren: string[]): string {
     return eligibleChildren[Math.floor(Math.random() * eligibleChildren.length)];
   }
 

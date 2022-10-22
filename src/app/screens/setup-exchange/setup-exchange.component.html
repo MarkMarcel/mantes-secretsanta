@@ -3,7 +3,7 @@
 </div>
 <form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="manteSecretSantaExchangeForm" class="mdc-layout-grid screen">
     <header class="mdc-layout-grid__inner">
-        <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Setup A New Mante Family Gift Exchange</h1>
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Setup {{year}} Mante Family Gifts Exchange</h1>
     </header>
     <div *ngIf="(step == 1)" class="mdc-layout-grid__inner">
         <p class="mdc-layout-grid__cell--span-12 mat-body-1">How many gifts per person?</p>
@@ -18,6 +18,9 @@
                 <mat-option *ngFor="let familyMember of familyMembers" [value]="familyMember.id">{{familyMember.name}}</mat-option>
             </mat-select>
         </mat-form-field>
+        <mat-error *ngIf="(manteSecretSantaExchangeForm.controls.participating.invalid)" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+            Please select family members to take part
+        </mat-error>
     </div>
     <div *ngIf="(step == 3)" class="mdc-layout-grid__inner">
         <p class="mdc-layout-grid__cell--span-12 mat-body-1">Which children will take part this year?</p>
@@ -34,6 +37,9 @@
                 <mat-option *ngFor="let familyMember of participatingFamilyMembers" [value]="familyMember.id">{{familyMember.name}}</mat-option>
             </mat-select>
         </mat-form-field>
+        <mat-error *ngIf="(manteSecretSantaExchangeForm.controls.membersToBuyForChildren.invalid)" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+            Adults to buy for children should be at least same number as children  selected ({{participatingChildren.length}})
+        </mat-error>
     </div>
     <div class="mdc-layout-grid__inner">
         <p *ngIf="(step < 4)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
@@ -54,27 +60,27 @@
 <section *ngIf="!isLoading && (state == State.REVIEW)" class="mdc-layout-grid screen">
     <header class="mdc-layout-grid__inner">
         <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Review The Details</h1>
-        <h3 class="mdc-layout-grid__cell--span-12 subheading-2">Mante Family Gift Exchange - {{year}}</h3>
+        <h3 class="mdc-layout-grid__cell--span-12  mat-h2">Mante Family Gift Exchange - {{year}}</h3>
     </header>
     <div class="mdc-layout-grid__inner">
-        <h4 class="mdc-layout-grid__cell--span-12 subheading-3">Family members taking part</h4>
-        <mat-list class="mdc-layout-grid__cell--span-12">
-            <mat-list-item *ngFor="let familyMember of participatingFamilyMembers">
-              <p matLine>{{familyMember.name}}</p>
-              <p *ngIf="isBuyingForChild(familyMember.id)" matLine class="caption">Buying additional gift for a child</p>
+        <h4 class="mdc-layout-grid__cell--span-12  mat-h3"  style="margin: 0px !important; padding:0px !important;">Family members taking part</h4>
+        <mat-list class="mdc-layout-grid__cell--span-12" style="margin: 0px !important; padding:0px !important;">
+            <mat-list-item *ngFor="let familyMember of participatingFamilyMembers" style="margin: 0px !important; padding:0px !important;">
+              <p matLine  style="margin: 0px !important; padding:0px !important;">{{familyMember.name}}</p>
+              <p *ngIf="isBuyingForChild(familyMember.id)" matLine class="mat-caption">Additional gift for a child</p>
             </mat-list-item>
           </mat-list>
     </div>
     <div class="mdc-layout-grid__inner">
-        <h4 class="mdc-layout-grid__cell--span-12 subheading-3">Children taking part</h4>
-        <mat-list class="mdc-layout-grid__cell--span-12">
+        <h4 class="mdc-layout-grid__cell--span-12  mat-h3" style="margin: 0px !important; padding:0px !important;">Children taking part</h4>
+        <mat-list class="mdc-layout-grid__cell--span-12" style="margin: 0px !important; padding:0px !important;">
             <mat-list-item *ngFor="let child of participatingChildren">{{child.name}}</mat-list-item>
           </mat-list>
     </div>
     <div class="mdc-layout-grid__inner">
-        <h4 class="mdc-layout-grid__cell--span-12 subheading-3">Number of gifts to be received</h4>
-        <p class="mdc-layout-grid__cell--span-12">Per adult: {{manteSecretSantaExchangeForm.controls.numberOfGifts.value}}</p>
-        <p class="mdc-layout-grid__cell--span-12">Per child: {{numGiftsPerChild}}</p>
+        <h4 class="mdc-layout-grid__cell--span-12  mat-h3" style="margin: 0px !important; padding:0px !important;">Number of gifts to be received</h4>
+        <p class="mdc-layout-grid__cell--span-12" style="margin: 0px !important; padding:0px !important;">Per adult: {{manteSecretSantaExchangeForm.controls.numberOfGifts.value}}</p>
+        <p class="mdc-layout-grid__cell--span-12" style="margin: 0px !important; padding:0px !important;">Per child: {{numGiftsPerChild}}</p>
     </div>
     <div class="mdc-layout-grid__inner">
         <p *ngIf="(step > 1)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
@@ -83,7 +89,7 @@
             </button>
         </p>
         <p *ngIf="(step == 4)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
-            <button type="button" mat-flat-button color="accent" aria-label="Create" (click)="createExchange()">Create</button>
+            <button type="button" mat-flat-button color="primary" aria-label="Setup" (click)="setupExchange()">Setup</button>
         </p>
     </div>
 </section>
