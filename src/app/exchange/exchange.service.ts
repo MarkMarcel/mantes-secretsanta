@@ -19,27 +19,42 @@ export class ExchangeService {
     this._usersRefCollection = collection(firestore, FirestoreCollectionPaths.users);
   }
 
-  async assignSecretSantas(exchangeId: string) {
-    await setDoc(doc(this._exchangesCollection, exchangeId),{'isAssigning':true},{merge:true});
+  async assignSecretSantas(exchangeId: string): Promise<boolean> {
+    const checkAdults = new Map<string, number>()
+    const checkChildren = new Map<string, number>()
+    await setDoc(doc(this._exchangesCollection, exchangeId), { 'isAssigning': true }, { merge: true });
     const batch = writeBatch(this.firestore);
     const exchange = (await getDoc(doc(this._exchangesCollection, exchangeId).withConverter(exchangeConverter))).data()!!;
+    this.setupValidationChecks(exchange.participatingFamilyMembers, exchange.participatingChildren, checkAdults, checkChildren)
     let adults = exchange.participatingFamilyMembers.flatMap(id => Array(exchange.numberOfGiftsPerFamilyMember).fill(id));
     const numberOfGiftsPerChild = Math.floor(exchange.familyMembersBuyingForChildren.length / exchange.participatingChildren.length);
     let children = exchange.participatingChildren.flatMap(id => Array(numberOfGiftsPerChild).fill(id));
     const childrenOfThoseBuyingForChildren = await this.getChildrenOfThoseBuyingForChildren(exchange.familyMembersBuyingForChildren);
     exchange.participatingFamilyMembers.forEach((familyMemberId) => {
       const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPaths.exchanges}/${exchange.id}`;
-      const assignedAdults = this.assignAdults(familyMemberId,adults,exchange.numberOfGiftsPerFamilyMember);
+      const assignedAdults = this.assignAdults(familyMemberId, adults, exchange.numberOfGiftsPerFamilyMember);
+      //update checkAdults
+      assignedAdults.forEach(id => {
+        checkAdults.set(id, (checkAdults.get(id)!! + 1));
+      });
       batch.update(doc(this.firestore, path), { 'assignedAdults': assignedAdults })
       if (exchange.familyMembersBuyingForChildren.includes(familyMemberId)) {
         const eligibleChildren = children.filter(id => !(childrenOfThoseBuyingForChildren.get(familyMemberId)!!.includes(id)));
-        const assignedChild = (eligibleChildren.length > 0)?this.assignChild(eligibleChildren):null;
+        const assignedChild = (eligibleChildren.length > 0) ? this.assignChild(eligibleChildren) : null;
+        //update checkChildren
+        if (assignedChild != null) checkChildren.set(assignedChild, (checkChildren.get(assignedChild)!! + 1));
         children = children.filter(id => (id != assignedChild))
         batch.update(doc(this.firestore, path), { 'assignedChild': assignedChild })
       }
     });
-    batch.update(doc(this._exchangesCollection, exchangeId),{'isAssigning':false})
-    await batch.commit();
+    if (this.validateAssignments(checkAdults, checkChildren, exchange.numberOfGiftsPerFamilyMember, numberOfGiftsPerChild)) {
+      batch.update(doc(this._exchangesCollection, exchangeId), { 'isAssigning': false })
+      await batch.commit();
+      return true;
+    }else{
+      await setDoc(doc(this._exchangesCollection, exchangeId), { 'isAssigning': false }, { merge: true });
+      return false;
+    }
   }
 
   async getAllExchanges(): Promise<Exchange[]> {
@@ -53,18 +68,18 @@ export class ExchangeService {
     return data.docs.map(doc => doc.data()).sort((exchange1, exchange2) => exchange1.year.localeCompare(exchange2.year));
   }
 
-  async getUserExchangeAssignedAdults(userExchange:UserExchange):Promise<User[]>{
+  async getUserExchangeAssignedAdults(userExchange: UserExchange): Promise<User[]> {
     const assignedAdults = await getDocs(query(this._usersRefCollection, where('id', 'in', userExchange.assignedAdults)).withConverter(userConverter));
-      return assignedAdults.docs.map(doc => doc.data()).sort((user1, user2) => user1.name.localeCompare(user2.name));
+    return assignedAdults.docs.map(doc => doc.data()).sort((user1, user2) => user1.name.localeCompare(user2.name));
   }
 
-  async getUserExchangeAssignedChild(userExchange:UserExchange):Promise<Child>{
-    return (await getDoc(doc(collection(this.firestore,FirestoreCollectionPaths.children), userExchange.assignedChild!!).withConverter(childConverter))).data()!!;
+  async getUserExchangeAssignedChild(userExchange: UserExchange): Promise<Child> {
+    return (await getDoc(doc(collection(this.firestore, FirestoreCollectionPaths.children), userExchange.assignedChild!!).withConverter(childConverter))).data()!!;
   }
 
-  observeExchange(exchangeId: string,callback: (arg0: boolean) => void): Unsubscribe {
+  observeExchange(exchangeId: string, callback: (arg0: boolean) => void): Unsubscribe {
     return onSnapshot(doc(this._exchangesCollection, exchangeId), (doc) => {
-        callback(doc.data()!!['isAssigning']);
+      callback(doc.data()!!['isAssigning']);
     });
   }
 
@@ -82,7 +97,7 @@ export class ExchangeService {
     await batch.commit();
   }
 
-  private assignAdults(familyMemberId:string,remainingAdults: string[],numOfGifts:number): string[] {
+  private assignAdults(familyMemberId: string, remainingAdults: string[], numOfGifts: number): string[] {
     let eligibleAdults = remainingAdults.filter(id => (id != familyMemberId));
     const assigned: string[] = [];
     for (let i = 0; i < numOfGifts; i++) {
@@ -93,7 +108,7 @@ export class ExchangeService {
     }
     assigned.forEach(id => {
       const i = remainingAdults.indexOf(id);
-      remainingAdults.splice(i,1);
+      remainingAdults.splice(i, 1);
     });
     return assigned;
   }
@@ -111,5 +126,20 @@ export class ExchangeService {
       }
     });
     return children;
+  }
+
+  private setupValidationChecks(adults: string[], children: string[], checkAdults: Map<string, number>, checkChildren: Map<string, number>) {
+    adults.forEach(id => checkAdults.set(id, 0));
+    children.forEach(id => checkChildren.set(id, 0));
+  }
+
+  private validateAssignments(checkAdults: Map<string, number>, checkChildren: Map<string, number>, numberOfGifts: number, numberOfGiftsPerChild: number): boolean {
+    for (let num of checkAdults.values()) {
+      if (num != numberOfGifts) return false;
+    }
+    for (let num of checkChildren.values()) {
+      if (num != numberOfGiftsPerChild) return false;
+    }
+    return true;
   }
 }
