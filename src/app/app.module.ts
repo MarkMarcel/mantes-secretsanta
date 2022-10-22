@@ -22,6 +22,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
+import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 import { ProfileComponent } from './screens/profile/profile.component';
 import { HomeComponent } from './screens/home/home.component';
 import { SignInComponent } from './screens/sign-in/sign-in.component';
@@ -56,10 +57,11 @@ import { SetupExchangeComponent } from './screens/setup-exchange/setup-exchange.
     MatProgressSpinnerModule,
     MatRadioModule,
     MatSelectModule,
+    MatSnackBarModule,
     NgxIntlTelInputModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [{provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

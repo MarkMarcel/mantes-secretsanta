@@ -18,7 +18,7 @@ export const RoutePaths = {
 }
 
 const routes: Routes = [
-  { path: RoutePaths.home, component: HomeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
+  { path: RoutePaths.home, component: ProfileComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: RoutePaths.auth, component: SignInComponent },
   { path: RoutePaths.profile, component: ProfileComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: RoutePaths.setupExchange, component: SetupExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: adminOnly } },

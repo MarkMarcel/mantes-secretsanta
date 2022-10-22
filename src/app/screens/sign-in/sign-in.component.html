@@ -1,7 +1,8 @@
 <form [formGroup]="authForm" style="max-width: 300px;" class="mdc-layout-grid">
     <div class="mdc-layout-grid__inner" *ngIf="(state == State.UNINITIALISED) || !isRecaptchaReady">
         <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Enter Active Phone Number</h1>
-        <ngx-intl-tel-input [cssClass]="'mdc-layout-grid__cell--span-12 mat-body'" [enableAutoCountrySelect]="true"
+        <p class="mdc-layout-grid__cell--span-12">A code will be sent to you via SMS</p>
+        <ngx-intl-tel-input [cssClass]="'mdc-layout-grid__cell--span-12 mat-body test'" [enableAutoCountrySelect]="true"
             [enablePlaceholder]="true" [selectedCountryISO]="CountryISO.Ghana" [maxLength]="15" [phoneValidation]="true"
             [separateDialCode]="false"
             [onlyCountries]="[CountryISO.Ghana,CountryISO.UnitedStates,CountryISO.UnitedKingdom,CountryISO.Germany]"
@@ -9,13 +10,14 @@
             inputId="phone_number">
         </ngx-intl-tel-input>
         <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
-            <button mat-icon-button color="accent" aria-label="Request code" (click)="requestOTP()">
+            <button mat-icon-button aria-label="Request code" (click)="requestOTP()">
                 <mat-icon>arrow_forward</mat-icon>
             </button>
         </p>
     </div>
     <div class="mdc-layout-grid__inner" *ngIf="(state == State.OTP_READY) && isRecaptchaReady">
         <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Enter Code Received</h1>
+        <p class="mdc-layout-grid__cell--span-12">Didn't receive code? Go back and try again</p>
         <mat-form-field appearance="standard" class="mdc-layout-grid__cell--span-12">
             <input matInput formControlName="code" placeholder="123456">
         </mat-form-field>
@@ -25,7 +27,7 @@
             </button>
         </p>
         <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
-            <button mat-flat-button color="accent" aria-label="Verify code" (click)="verifyOTP()">Verify</button>
+            <button mat-flat-button aria-label="Verify code" (click)="verifyOTP()">Verify</button>
         </p>
     </div>
     <div class="mdc-layout-grid__inner" *ngIf="(state == State.LOADING) && isRecaptchaReady">

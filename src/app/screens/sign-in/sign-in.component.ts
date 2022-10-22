@@ -5,6 +5,7 @@ import { Auth, RecaptchaVerifier, ConfirmationResult } from '@angular/fire/auth'
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/user/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 enum State {
   LOADING, OTP_READY, UNINITIALISED,
@@ -28,18 +29,20 @@ export class SignInComponent implements AfterViewInit {
   });
 
   constructor(
-    private authService: AuthenticationService,
-    private router: Router,
-    private userService: UserService,
+    private _authService: AuthenticationService,
+    private _router: Router,
+    private _snackBar: MatSnackBar,
+    private _userService: UserService,
   ) { }
 
   ngAfterViewInit(): void {
     (window as any).verifier = new RecaptchaVerifier('request-otp', {
       'size': 'invisible',
       'callback': (_response: any) => {
+        console.log(_response)
         this.isRecaptchaReady = true;
       }
-    }, this.authService.auth);
+    }, this._authService.auth);
   }
 
   back() {
@@ -47,20 +50,30 @@ export class SignInComponent implements AfterViewInit {
   }
 
   async requestOTP() {
+    if(this.authForm.controls.phoneNumber.invalid){
+      this._snackBar.open("Enter valid phone number");
+      return;
+    }
     this.state = State.LOADING
-    this.confirmationResult = await this.authService.requestOTP((this.authForm.value.phoneNumber as any).e164Number, (window as any).verifier)
-    this.state = State.OTP_READY
+    try {
+      this.confirmationResult = await this._authService.requestOTP((this.authForm.value.phoneNumber as any).e164Number, (window as any).verifier)
+      this.state = State.OTP_READY
+    } catch (error) {
+      this._snackBar.open("Couldn't send code");
+      this.back();
+      console.log(error);
+    }
   }
 
   async verifyOTP() {
     this.state = State.LOADING
     const user = await this.confirmationResult?.confirm(this.authForm.value.code as string)
     if (user) {
-      const hasRegistered = await this.userService.getUserDetails(user.user.uid)
+      const hasRegistered = await this._userService.getUserDetails(user.user.uid)
       if (hasRegistered)
-        this.router.navigate([''])
+        this._router.navigate([''])
       else
-        this.router.navigate(['profile'])
+        this._router.navigate(['profile'])
     }
   }
 
