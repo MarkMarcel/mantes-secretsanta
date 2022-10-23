@@ -1,4 +1,5 @@
 import { QueryDocumentSnapshot, SnapshotOptions } from "@angular/fire/firestore";
+import { PersonPlaceHolderUrl } from "src/app/firebase-paths";
 
 export class User {
     constructor(
@@ -6,7 +7,7 @@ export class User {
         public readonly childrenIds: string[],
         public readonly isMarried: boolean,
         public readonly name: string,
-        public readonly pictureUrl: string | null = null,
+        public readonly pictureUrl: string = PersonPlaceHolderUrl,
         public readonly secretSantaExchanges: string[] = [],
     ) { }
 };
@@ -25,7 +26,7 @@ export const userConverter = {
     fromFirestore: (snapshot:QueryDocumentSnapshot, options:SnapshotOptions) => {
         const data = snapshot.data(options);
         const childrenIds = (data['children'])??[]
-        const pictureUrl = (data['picture'])??null
+        const pictureUrl = (data['pictureUrl'])??PersonPlaceHolderUrl
         const secretSantaExchanges = (data['exchanges'])??[]
         return new User(data['id'],childrenIds,data['married'],data['name'],pictureUrl,secretSantaExchanges);
     }

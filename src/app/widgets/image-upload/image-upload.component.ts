@@ -39,9 +39,7 @@ export class ImageUploadComponent implements OnInit {
     this.isShowCropper = true;
   }
 
-  cropperReady() {
-    console.log(this.isShowCropper)
-  }
+  cropperReady() {}
 
   loadImageFailed() {
     this._snackbar.open('Failed to load image');

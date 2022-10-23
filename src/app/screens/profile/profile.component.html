@@ -1,8 +1,8 @@
 <div *ngIf="isLoading" style="width: 25px; margin: auto;">
     <mat-spinner [diameter]="25" [strokeWidth]="3" style="width: 30px; display: inline;"></mat-spinner>
 </div>
-<form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="detailsForm" style="max-width: 350px;"
-    class="mdc-layout-grid">
+<form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="detailsForm"
+    class="mdc-layout-grid screen">
     <header class="mdc
     -layout-grid__inner">
         <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Sort Out Your Details</h1>
@@ -39,11 +39,11 @@
         </mat-form-field>
         <mat-error *ngIf="(detailsForm.controls.children.invalid) && hasChildren"
             class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 vertical-space">Select your children</mat-error>
-        <!-- <mat-grid-list cols="2" class="mdc-layout-grid__cell--span-12 vertical-space">
+        <mat-grid-list cols="2" class="mdc-layout-grid__cell--span-12 vertical-space" [gutterSize]="'8'" [rowHeight]="300">
             <mat-grid-tile *ngFor="let child of myChildren">
                 <app-child [child]="child"></app-child>
             </mat-grid-tile>
-        </mat-grid-list> -->
+        </mat-grid-list>
     </div>
     <div class="mdc-layout-grid__inner">
         <p *ngIf="(step <= 2)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
@@ -66,17 +66,18 @@
     <div class="mdc-layout-grid__inner vertical-space">
         <p class="mdc-layout-grid__cell--span-12 mat-body">{{detailsForm.controls.name.value}}</p>
         <p class="mdc-layout-grid__cell--span-12 mat-body">
-            <span  *ngIf="(detailsForm.controls.isMarried.value) == 'true'">Married</span>
-            <span  *ngIf="(detailsForm.controls.isMarried.value) == 'false'">Not married</span>
+            <span *ngIf="(detailsForm.controls.isMarried.value) == 'true'">Married</span>
+            <span *ngIf="(detailsForm.controls.isMarried.value) == 'false'">Not married</span>
         </p>
         <p class="mdc-layout-grid__cell--span-12 mat-body">
             <span *ngIf="hasChildren">Has</span>
             <span *ngIf="!hasChildren">Does not have</span>
-            children under 10 years</p>
+            children under 10 years
+        </p>
         <h4 *ngIf="hasChildren" class="mdc-layout-grid__cell--span-12 mat-h2">Your children</h4>
         <mat-list *ngIf="hasChildren" class="mdc-layout-grid__cell--span-12">
             <mat-list-item *ngFor="let child of myChildren">{{child.name}}</mat-list-item>
-          </mat-list>
+        </mat-list>
     </div>
     <div class="mdc-layout-grid__inner">
         <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
@@ -85,7 +86,8 @@
             </button>
         </p>
         <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
-            <button type="button" mat-flat-button color="primary" aria-label="Done" (click)="updateUserDetails()">Done</button>
+            <button type="button" mat-flat-button color="primary" aria-label="Done"
+                (click)="updateUserDetails()">Done</button>
         </p>
     </div>
 </section>

@@ -1,9 +1,4 @@
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>{{child?.name}}</mat-card-title>
-    </mat-card-header>
-    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-    <mat-card-actions>
-      <button type="button" mat-button>Update photo</button>
-    </mat-card-actions>
-  </mat-card>
+<div style="max-width: 450px; width: 100%;">
+  <h3 class="mat-h3 vertical-space" style="height:40px;">{{child!!.name}}</h3>
+  <app-picture [meta]="{id:child!!.id,type:ImageType.CHILD}" [pictureUrl]="child!!.pictureUrl"></app-picture>
+</div>
