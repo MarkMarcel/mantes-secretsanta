@@ -1,0 +1,27 @@
+<div class="mdc-layout-grid" style="max-width: 400px;">
+    <div class="mdc-layout-grid__inner">
+        <div style="display: flex;" class="mdc-layout-grid__cell--span-12">
+            <span class="horizontal-space" style="flex-grow: 1;">
+                <button type="button" mat-icon-button (click)="fileInput.click()">
+                    <mat-icon>photo_library</mat-icon>
+                </button>
+                <input hidden #fileInput type="file" accept="image/png, image/jpeg" (change)="fileChangeEvent($event)" />
+            </span>
+            <button *ngIf="isShowCropper && !isPreviewCrop" type="button" mat-flat-button (click)="previewEdit()">Crop</button>
+            <button *ngIf="isPreviewCrop" type="button" mat-flat-button class="horizontal-space" (click)="previewEdit()">Edit</button>
+            <button *ngIf="isPreviewCrop" type="button" mat-flat-button (click)="uploadImage()">Upload</button>
+        </div>
+        <image-cropper *ngIf="(!isPreviewCrop)" class="mdc-layout-grid__cell--span-12"
+            [imageChangedEvent]="imageChangedEvent"
+            [maintainAspectRatio]="true"
+            [aspectRatio]="1 / 1"
+            format="jpeg"
+            (cropperReady)="cropperReady()"
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded($event)"
+            (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+        <img *ngIf="isPreviewCrop" [src]="croppedImage" class="mdc-layout-grid__cell--span-12" style="max-width: 100%;"/>
+    </div>
+</div>
+

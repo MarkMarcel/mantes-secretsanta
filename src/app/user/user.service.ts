@@ -3,7 +3,7 @@ import { collection, CollectionReference, doc, Firestore, getDoc, getDocs, query
 import { BehaviorSubject } from 'rxjs';
 import { Child, childConverter } from 'src/models/child';
 import { User, userConverter } from 'src/models/user';
-import { FirestoreCollectionPaths } from '../firestore.collection.paths';
+import { FirestoreCollectionPath } from '../firebase-paths';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,8 @@ export class UserService {
   readonly user$ = this._userSource.asObservable()
 
   constructor(firestore: Firestore) {
-    this._childrenCollection = collection(firestore, FirestoreCollectionPaths.children);
-    this._usersCollection = collection(firestore, FirestoreCollectionPaths.users);
+    this._childrenCollection = collection(firestore, FirestoreCollectionPath.children);
+    this._usersCollection = collection(firestore, FirestoreCollectionPath.users);
   }
 
   async getAllChildren(): Promise<Child[]> {

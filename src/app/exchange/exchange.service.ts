@@ -4,7 +4,7 @@ import { Child, childConverter } from 'src/models/child';
 import { Exchange, exchangeConverter } from 'src/models/exchange';
 import { User, userConverter } from 'src/models/user';
 import { UserExchange, userExchangeConverter } from 'src/models/user-exchange';
-import { FirestoreCollectionPaths } from '../firestore.collection.paths';
+import { FirestoreCollectionPath } from '../firebase-paths';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -15,8 +15,8 @@ export class ExchangeService {
   private _usersRefCollection: CollectionReference;
 
   constructor(private firestore: Firestore, private userService: UserService) {
-    this._exchangesCollection = collection(this.firestore, FirestoreCollectionPaths.exchanges);
-    this._usersRefCollection = collection(firestore, FirestoreCollectionPaths.users);
+    this._exchangesCollection = collection(this.firestore, FirestoreCollectionPath.exchanges);
+    this._usersRefCollection = collection(firestore, FirestoreCollectionPath.users);
   }
 
   async assignSecretSantas(exchangeId: string): Promise<boolean> {
@@ -31,7 +31,7 @@ export class ExchangeService {
     let children = exchange.participatingChildren.flatMap(id => Array(numberOfGiftsPerChild).fill(id));
     const childrenOfThoseBuyingForChildren = await this.getChildrenOfThoseBuyingForChildren(exchange.familyMembersBuyingForChildren);
     exchange.participatingFamilyMembers.forEach((familyMemberId) => {
-      const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPaths.exchanges}/${exchange.id}`;
+      const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPath.exchanges}/${exchange.id}`;
       const assignedAdults = this.assignAdults(familyMemberId, adults, exchange.numberOfGiftsPerFamilyMember);
       //update checkAdults
       assignedAdults.forEach(id => {
@@ -63,7 +63,7 @@ export class ExchangeService {
   }
 
   async getAllUserExchanges(userId: string): Promise<UserExchange[]> {
-    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPaths.exchanges}`;
+    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPath.exchanges}`;
     const data = await getDocs(query(collection(this.firestore, path)).withConverter(userExchangeConverter));
     return data.docs.map(doc => doc.data()).sort((exchange1, exchange2) => exchange1.year.localeCompare(exchange2.year));
   }
@@ -74,7 +74,7 @@ export class ExchangeService {
   }
 
   async getUserExchangeAssignedChild(userExchange: UserExchange): Promise<Child> {
-    return (await getDoc(doc(collection(this.firestore, FirestoreCollectionPaths.children), userExchange.assignedChild!!).withConverter(childConverter))).data()!!;
+    return (await getDoc(doc(collection(this.firestore, FirestoreCollectionPath.children), userExchange.assignedChild!!).withConverter(childConverter))).data()!!;
   }
 
   observeExchange(exchangeId: string, callback: (arg0: boolean) => void): Unsubscribe {
@@ -90,7 +90,7 @@ export class ExchangeService {
     const updatedExchange = new Exchange(docRef.id, exchange.familyMembersBuyingForChildren, exchange.numberOfGiftsPerFamilyMember, exchange.participatingChildren, exchange.participatingFamilyMembers, exchange.year);
     const updatedExchangeSubDetails = { 'id': updatedExchange.id, 'year': updatedExchange.year };
     updatedExchange.participatingFamilyMembers.forEach((familyMemberId) => {
-      const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPaths.exchanges}/${docRef.id}`;
+      const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPath.exchanges}/${docRef.id}`;
       batch.set(doc(this.firestore, path), updatedExchangeSubDetails);
     });
     batch.set(docRef, exchangeConverter.toFirestore(updatedExchange));

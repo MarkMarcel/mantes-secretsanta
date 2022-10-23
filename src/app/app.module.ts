@@ -13,6 +13,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import {MatDialogModule} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,11 +25,14 @@ import { MatRadioModule, MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/rad
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { ImageCropperModule } from 'ngx-image-cropper';
 import { ProfileComponent } from './screens/profile/profile.component';
 import { HomeComponent } from './screens/home/home.component';
 import { SignInComponent } from './screens/sign-in/sign-in.component';
 import { ChildComponent } from './widgets/child/child.component';
 import { SetupExchangeComponent } from './screens/setup-exchange/setup-exchange.component';
+import { ImageUploadComponent } from './widgets/image-upload/image-upload.component';
+import { PictureComponent } from './widgets/picture/picture.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +42,8 @@ import { SetupExchangeComponent } from './screens/setup-exchange/setup-exchange.
     SignInComponent,
     ChildComponent,
     SetupExchangeComponent,
+    ImageUploadComponent,
+    PictureComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,8 +53,10 @@ import { SetupExchangeComponent } from './screens/setup-exchange/setup-exchange.
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     BrowserAnimationsModule,
+    ImageCropperModule,
     MatButtonModule,
     MatCardModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatGridListModule,
     MatIconModule,

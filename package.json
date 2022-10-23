@@ -26,6 +26,7 @@
     "google-libphonenumber": "^3.2.31",
     "intl-tel-input": "^17.0.3",
     "ngx-bootstrap": "^9.0.0",
+    "ngx-image-cropper": "^6.2.2",
     "ngx-intl-tel-input": "^3.2.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
