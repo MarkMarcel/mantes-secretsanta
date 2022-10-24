@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { Unsubscribe } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
@@ -44,6 +45,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _dialog: MatDialog,
     private _exchangeService: ExchangeService,
     private _router: Router,
+    private _snackbar:MatSnackBar,
     private _userService: UserService,
   ) { }
 
@@ -79,7 +81,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   onSignOut(){
-    this._authService.signOut();
+    this.isLoading = true;
+    try{
+      this._authService.signOut();
+    }catch(e:any){
+      this._snackbar.open(`Couldn't logout`);
+    }finally{
+      this.isLoading = false;
+    }
   }
 
   private async checkUserRegistration() {
