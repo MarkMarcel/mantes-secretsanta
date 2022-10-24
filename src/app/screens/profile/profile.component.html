@@ -1,6 +1,5 @@
 <app-loading *ngIf="isLoading"></app-loading>
-<form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="detailsForm"
-    class="mdc-layout-grid screen">
+<form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="detailsForm" class="mdc-layout-grid screen">
     <header class="mdc
     -layout-grid__inner">
         <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Sort Out Your Details</h1>
@@ -37,11 +36,9 @@
         </mat-form-field>
         <mat-error *ngIf="(detailsForm.controls.children.invalid) && hasChildren"
             class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 vertical-space">Select your children</mat-error>
-        <mat-grid-list cols="2" class="mdc-layout-grid__cell--span-12 vertical-space" [gutterSize]="'8'" [rowHeight]="300">
-            <mat-grid-tile *ngFor="let child of myChildren">
-                <app-child [child]="child"></app-child>
-            </mat-grid-tile>
-        </mat-grid-list>
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 vertical-space">
+            <app-child *ngFor="let child of myChildren" [child]="child"></app-child>
+        </div>
     </div>
     <div class="mdc-layout-grid__inner">
         <p *ngIf="(step <= 2)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">

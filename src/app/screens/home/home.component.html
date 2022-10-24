@@ -2,8 +2,8 @@
 <div *ngIf="!isLoading">
     <header>
         <mat-toolbar>
-            <img [matMenuTriggerFor]="logout" style="border-radius:50%; border: 5px solid #fef6e5; height: 32px;" class="horizontal-space"
-                [src]="user?.pictureUrl" />
+            <img [matMenuTriggerFor]="logout" style="border-radius:50%; border: 5px solid #fef6e5; height: 48px;"
+                class="horizontal-space" [src]="user?.pictureUrl" />
             <span *ngIf="(exchanges.length < 1)">Not Added To A Family Gifts Exchange Yet</span>
             <span *ngIf="(exchanges.length >= 1)">
                 {{selectedExchange?.year}} Mante Family Gifts Exchange
@@ -16,8 +16,8 @@
                     (click)="onSetSelectedExchange(exchange)">{{exchange.year}}</button>
             </mat-menu>
             <mat-menu #logout="matMenu">
-                <button mat-menu-item
-                    (click)="onSignOut()">Logout</button>
+                <button mat-menu-item (click)="onUpdateImage()">Change picture</button>
+                <button mat-menu-item (click)="onSignOut()">Logout</button>
             </mat-menu>
         </mat-toolbar>
     </header>
@@ -28,29 +28,32 @@
             <button mat-raised-button color="accent" (click)="onUpdateImage()">Add Picture</button>
         </div>
         <div class="vertical-spacing" *ngIf="admins.includes(user?.id??'')" style="display: flex;">
-            <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to {{setupUpdate}} {{year}} Mante family gifts exchange?</span>
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to {{setupUpdate}} {{year}}
+                Mante family gifts exchange?</span>
             <button mat-raised-button color="accent" (click)="onSetupExchange()">Yes</button>
         </div>
         <div class="mdc-layout-grid__inner vertical-space">
             <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Adults assigned to you</h4>
-            <div *ngIf="isLoadingAdults" class="mdc-layout-grid__cell--span-12"><app-loading></app-loading></div>
-            <mat-grid-list *ngIf="!isLoadingAdults" cols="2" class="mdc-layout-grid__cell--span-12" [gutterSize]="'8'" [rowHeight]="300">
-                <mat-grid-tile *ngFor="let adult of assignedAdults">
-                    <app-adult [adult]="adult"></app-adult>
-                </mat-grid-tile>
-            </mat-grid-list>
+            <div *ngIf="isLoadingAdults" class="mdc-layout-grid__cell--span-12">
+                <app-loading></app-loading>
+            </div>
+            <div *ngIf="!isLoadingAdults" class="mdc-layout-grid__cell--span-12">
+                <app-adult *ngFor="let adult of assignedAdults" [adult]="adult"></app-adult>
+            </div>
         </div>
         <div *ngIf="(assignedChild != null)" class="mdc-layout-grid__inner">
             <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Child assigned to you</h4>
-            <div *ngIf="isLoadingChild" class="mdc-layout-grid__cell--span-12"><app-loading></app-loading></div>
-            <mat-grid-list *ngIf="!isLoadingChild" cols="2" class="mdc-layout-grid__cell--span-12" [gutterSize]="'8'" [rowHeight]="300">
-                <mat-grid-tile>
-                    <div>
-                        <h3 class="mat-h3 vertical-space" style="height:40px;">{{assignedChild!!.name}}</h3>
-                        <img style="width: 100%;" [src]="assignedChild.pictureUrl"/>
-                    </div>
-                </mat-grid-tile>
-            </mat-grid-list>
+            <div *ngIf="isLoadingChild" class="mdc-layout-grid__cell--span-12">
+                <app-loading></app-loading>
+            </div>
+            <div style="align-items: center; display: flex; width: 100%;" class="vertical-space">
+                <a [href]="assignedChild.pictureUrl"><img [src]="assignedChild.pictureUrl"
+                        style="border-radius:50%; border: 5px solid #fef6e5; width: 60px;" class="horizontal-space"
+                        alt="Picture of {{assignedChild.name}}"></a>
+                <div style="flex-grow: 1;">
+                    <h3 class="mat-h3">{{assignedChild.name}}</h3>
+                </div>
+            </div>
         </div>
     </div>
 </div>

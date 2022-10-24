@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatDividerModule} from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -61,6 +62,7 @@ import { AdultComponent } from './widgets/adult/adult.component';
     MatButtonModule,
     MatCardModule,
     MatDialogModule,
+    MatDividerModule,
     MatFormFieldModule,
     MatGridListModule,
     MatIconModule,
@@ -76,7 +78,7 @@ import { AdultComponent } from './widgets/adult/adult.component';
     ReactiveFormsModule,
   ],
   providers: [
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000,verticalPosition:'top'} },
     { provide: MAT_RADIO_DEFAULT_OPTIONS, useValue: { color: 'primary' }, }
   ],
   bootstrap: [AppComponent]
