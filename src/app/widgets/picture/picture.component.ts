@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { MatDialog} from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ImageUploadMeta } from 'src/models/image-upload-meta';
 import { ImageUploadComponent } from '../image-upload/image-upload.component';
@@ -9,7 +9,7 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
   templateUrl: './picture.component.html',
   styleUrls: ['./picture.component.scss']
 })
-export class PictureComponent implements OnInit {
+export class PictureComponent implements OnDestroy {
   @Input() meta: ImageUploadMeta | null = null;
   @Input() pictureUrl: string = ''
   @Output() url = new EventEmitter<string>();
@@ -20,7 +20,8 @@ export class PictureComponent implements OnInit {
     private _dialog: MatDialog
   ) { }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    this._dialogRef?.unsubscribe();
   }
 
   onUpdateImage() {

@@ -1,4 +1,60 @@
-<div *ngIf="isLoading" style="width: 25px; margin: auto;">
+<app-loading *ngIf="isLoading"></app-loading>
+<div *ngIf="!isLoading">
+    <header>
+        <mat-toolbar>
+            <img [matMenuTriggerFor]="logout" style="border-radius:50%; border: 5px solid #fef6e5; height: 32px;" class="horizontal-space"
+                [src]="user?.pictureUrl" />
+            <span *ngIf="(exchanges.length < 1)">Not Added To A Family Gifts Exchange Yet</span>
+            <span *ngIf="(exchanges.length >= 1)">
+                {{selectedExchange?.year}} Mante Family Gifts Exchange
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="dropdown for years">
+                    <mat-icon>expand_more</mat-icon>
+                </button>
+            </span>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngFor="let exchange of exchanges"
+                    (click)="onSetSelectedExchange(exchange)">{{exchange.year}}</button>
+            </mat-menu>
+            <mat-menu #logout="matMenu">
+                <button mat-menu-item
+                    (click)="onSignOut()">Logout</button>
+            </mat-menu>
+        </mat-toolbar>
+    </header>
+    <div class="mdc-layout-grid">
+        <div *ngIf="user?.pictureUrl == PersonPlaceHolderUrl" style="display: flex;" class="vertical-spacing">
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to add a picture to help others
+                identify you?</span>
+            <button mat-raised-button color="accent" (click)="onUpdateImage()">Add Picture</button>
+        </div>
+        <div class="vertical-spacing" *ngIf="admins.includes(user?.id??'')" style="display: flex;">
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to {{setupUpdate}} {{year}} Mante family gifts exchange?</span>
+            <button mat-raised-button color="accent" (click)="onSetupExchange()">Yes</button>
+        </div>
+        <div class="mdc-layout-grid__inner vertical-space">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Adults assigned to you</h4>
+            <div *ngIf="isLoadingAdults" class="mdc-layout-grid__cell--span-12"><app-loading></app-loading></div>
+            <mat-grid-list *ngIf="!isLoadingAdults" cols="2" class="mdc-layout-grid__cell--span-12" [gutterSize]="'8'" [rowHeight]="300">
+                <mat-grid-tile *ngFor="let adult of assignedAdults">
+                    <app-adult [adult]="adult"></app-adult>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+        <div *ngIf="(assignedChild != null)" class="mdc-layout-grid__inner">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Child assigned to you</h4>
+            <div *ngIf="isLoadingChild" class="mdc-layout-grid__cell--span-12"><app-loading></app-loading></div>
+            <mat-grid-list *ngIf="!isLoadingChild" cols="2" class="mdc-layout-grid__cell--span-12" [gutterSize]="'8'" [rowHeight]="300">
+                <mat-grid-tile>
+                    <div>
+                        <h3 class="mat-h3 vertical-space" style="height:40px;">{{assignedChild!!.name}}</h3>
+                        <img style="width: 100%;" [src]="assignedChild.pictureUrl"/>
+                    </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+    </div>
+</div>
+
     <mat-spinner [diameter]="25" [strokeWidth]="3" style="width: 30px; display: inline;"></mat-spinner>
 </div>
 <div *ngIf="!isLoading">
@@ -9,6 +65,7 @@
     <div *ngIf="(exchanges.length >= 1)">
         <header>
             <mat-toolbar>
+                <img style="border-radius:50%; border: 5px solid #fef6e5; height: 32px;" class="horizontal-space" [src]="user?.pictureUrl"/>
                 <span>
                     {{selectedExchange?.year}} Mante Family Gifts Exchange
                     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="dropdown for years">
@@ -48,4 +105,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->

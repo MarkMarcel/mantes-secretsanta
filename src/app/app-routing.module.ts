@@ -7,7 +7,6 @@ import { AuthGuard, hasCustomClaim, redirectUnauthorizedTo, } from '@angular/fir
 import { SetupExchangeComponent } from './screens/setup-exchange/setup-exchange.component';
 
 
-const adminOnly = () => hasCustomClaim('admin');
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['auth']);
 
 export const RoutePaths = {
@@ -21,11 +20,11 @@ const routes: Routes = [
   { path: RoutePaths.home, component: HomeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: RoutePaths.auth, component: SignInComponent },
   { path: RoutePaths.profile, component: ProfileComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
-  { path: RoutePaths.setupExchange, component: SetupExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: adminOnly } },
+  { path: RoutePaths.setupExchange, component: SetupExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{onSameUrlNavigation: 'reload'})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

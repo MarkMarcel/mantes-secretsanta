@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
-import { Auth, RecaptchaVerifier, ConfirmationResult } from '@angular/fire/auth';
+import { RecaptchaVerifier, ConfirmationResult } from '@angular/fire/auth';
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/user/user.service';
@@ -50,7 +50,7 @@ export class SignInComponent implements AfterViewInit {
   }
 
   async requestOTP() {
-    if(this.authForm.controls.phoneNumber.invalid){
+    if (this.authForm.controls.phoneNumber.invalid) {
       this._snackBar.open("Enter valid phone number");
       return;
     }
@@ -67,13 +67,19 @@ export class SignInComponent implements AfterViewInit {
 
   async verifyOTP() {
     this.state = State.LOADING
-    const user = await this.confirmationResult?.confirm(this.authForm.value.code as string)
-    if (user) {
-      const hasRegistered = await this._userService.getUserDetails(user.user.uid)
-      if (hasRegistered)
-        this._router.navigate([''])
-      else
-        this._router.navigate(['profile'])
+    try {
+      const user = await this.confirmationResult?.confirm(this.authForm.value.code as string)
+      if (user) {
+        const hasRegistered = await this._userService.getUserDetails(user.user.uid)
+        if (hasRegistered)
+          this._router.navigate([''])
+        else
+          this._router.navigate(['profile'])
+      }
+    } catch (error) {
+      this._snackBar.open('Invalid or expired code');
+      console.log(error);
+      this.state = State.OTP_READY;
     }
   }
 

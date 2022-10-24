@@ -33,6 +33,8 @@ import { ChildComponent } from './widgets/child/child.component';
 import { SetupExchangeComponent } from './screens/setup-exchange/setup-exchange.component';
 import { ImageUploadComponent } from './widgets/image-upload/image-upload.component';
 import { PictureComponent } from './widgets/picture/picture.component';
+import { LoadingComponent } from './widgets/loading/loading.component';
+import { AdultComponent } from './widgets/adult/adult.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { PictureComponent } from './widgets/picture/picture.component';
     SetupExchangeComponent,
     ImageUploadComponent,
     PictureComponent,
+    LoadingComponent,
+    AdultComponent,
   ],
   imports: [
     BrowserModule,

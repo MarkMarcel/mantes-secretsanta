@@ -1,6 +1,4 @@
-<div *ngIf="isLoading" style="width: 25px; margin: auto;">
-    <mat-spinner [diameter]="25" [strokeWidth]="3" style="width: 30px; display: inline;"></mat-spinner>
-</div>
+<app-loading *ngIf="isLoading"></app-loading>
 <form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="detailsForm"
     class="mdc-layout-grid screen">
     <header class="mdc

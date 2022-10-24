@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
-import { ImageService} from 'src/app/image/image.service';
+import { ImageService } from 'src/app/image/image.service';
 import { ImageUploadMeta } from 'src/models/image-upload-meta';
 
 @Component({
@@ -12,15 +12,16 @@ import { ImageUploadMeta } from 'src/models/image-upload-meta';
 })
 export class ImageUploadComponent implements OnInit {
   imageChangedEvent: any = '';
+  isLoading = false;
   isPreviewCrop = false;
   isShowCropper = false;
   croppedImage: any = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private _data: ImageUploadMeta,
-    private _dialog:MatDialogRef<ImageUploadComponent>,
-    private _imageService:ImageService,
-    private _snackbar:MatSnackBar,
+    private _dialog: MatDialogRef<ImageUploadComponent>,
+    private _imageService: ImageService,
+    private _snackbar: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
@@ -39,7 +40,7 @@ export class ImageUploadComponent implements OnInit {
     this.isShowCropper = true;
   }
 
-  cropperReady() {}
+  cropperReady() { }
 
   loadImageFailed() {
     this._snackbar.open('Failed to load image');
@@ -49,9 +50,15 @@ export class ImageUploadComponent implements OnInit {
     this.isPreviewCrop = !this.isPreviewCrop;
   }
 
-  async uploadImage(){
-    const url = await this._imageService.saveImage(this._data.id,this.croppedImage,this._data.type);
-    this._dialog.close(url);
+  async uploadImage() {
+    this.isLoading = true
+    try {
+      const url = await this._imageService.saveImage(this._data.id, this.croppedImage, this._data.type);
+      this._dialog.close(url);
+    } catch (e: any) { }
+    finally {
+      this.isLoading = false;
+    }
   }
 
 }

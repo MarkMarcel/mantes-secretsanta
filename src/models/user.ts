@@ -1,6 +1,12 @@
 import { QueryDocumentSnapshot, SnapshotOptions } from "@angular/fire/firestore";
 import { PersonPlaceHolderUrl } from "src/app/firebase-paths";
 
+export const AdminIds = [
+    "ccZQKHt4uuV3JpDccPaOsZU5qIs1",
+    "0nf0AWva8AbQs43Y5lyUIynJB5C2",
+    "qxrWPnpoNpaNwOC0xfI14ltRp712"
+];
+
 export class User {
     constructor(
         public readonly id: string,

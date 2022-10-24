@@ -120,6 +120,7 @@ export class SetupExchangeComponent implements AfterViewInit {
 
   private observeParticipatingMembers(){
     this.manteSecretSantaExchangeForm.controls.participating.valueChanges.subscribe((p) => {
+      this.maxNumOfGifts = p!!.length - 1
         this.participatingFamilyMembers = this.familyMembers.filter((f) => (p as string[]).includes(f.id));
         const m = this.participatingFamilyMembers.filter((f) => f.isMarried).map((f) => f.id);
         const e = (this.manteSecretSantaExchangeForm.controls.membersToBuyForChildren.value!!).filter((id) => this.participatingFamilyMembers.find((f) => f.id == id));

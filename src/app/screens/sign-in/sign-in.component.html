@@ -1,4 +1,5 @@
-<form [formGroup]="authForm" style="max-width: 300px;" class="mdc-layout-grid">
+<app-loading *ngIf="(state == State.LOADING)"></app-loading>
+<form [formGroup]="authForm" class="mdc-layout-grid screen">
     <div class="mdc-layout-grid__inner" *ngIf="(state == State.UNINITIALISED) || !isRecaptchaReady">
         <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Enter Active Phone Number</h1>
         <p class="mdc-layout-grid__cell--span-12">A code will be sent to you via SMS</p>
@@ -28,11 +29,6 @@
         </p>
         <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
             <button mat-flat-button aria-label="Verify code" (click)="verifyOTP()">Verify</button>
-        </p>
-    </div>
-    <div class="mdc-layout-grid__inner" *ngIf="(state == State.LOADING) && isRecaptchaReady">
-        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
-            <mat-spinner [diameter]="30" [strokeWidth]="3"></mat-spinner>
         </p>
     </div>
     <span id="request-otp"></span>
