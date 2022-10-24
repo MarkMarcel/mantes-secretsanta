@@ -3,6 +3,7 @@ import { QueryDocumentSnapshot, SnapshotOptions } from "@angular/fire/firestore"
 export class Exchange {
     constructor(
         public readonly id: string,
+        public readonly assignedPeople:boolean,
         public readonly familyMembersBuyingForChildren: string[],
         public readonly numberOfGiftsPerFamilyMember: number,
         public readonly participatingChildren: string[],
@@ -15,6 +16,7 @@ export const exchangeConverter = {
     toFirestore: (exchange:Exchange) => {
         return {
             'id':exchange.id,
+            'assignedPeople':exchange.assignedPeople,
             'familyMembersBuyingForChildren':exchange.familyMembersBuyingForChildren,
             'numOfGifts':exchange.numberOfGiftsPerFamilyMember,
             'participatingMembers':exchange.participatingFamilyMembers,
@@ -27,6 +29,7 @@ export const exchangeConverter = {
         console.debug(data)
         return new Exchange(
             data['id'] ?? '',
+            data['assignedPeople'],
             data['familyMembersBuyingForChildren'],
             data['numOfGifts'],
             data['participatingChildren'],

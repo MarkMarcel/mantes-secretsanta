@@ -1,5 +1,5 @@
-<app-loading *ngIf="isLoading"></app-loading>
-<div *ngIf="!isLoading">
+<app-loading *ngIf="isLoading || isAssigning"></app-loading>
+<div *ngIf="!isLoading || !isAssigning">
     <header>
         <mat-toolbar>
             <img [matMenuTriggerFor]="logout" style="border-radius:50%; border: 5px solid #fef6e5; height: 48px;"
@@ -27,12 +27,23 @@
                 identify you?</span>
             <button mat-raised-button color="accent" (click)="onUpdateImage()">Add Picture</button>
         </div>
-        <div class="vertical-spacing" *ngIf="admins.includes(user?.id??'')" style="display: flex;">
+        <div class="vertical-space" *ngIf="isAdmin" style="display: flex;">
             <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to {{setupUpdate}} {{year}}
-                Mante family gifts exchange?</span>
+                Mante family gifts exchange configuration?</span>
             <button mat-raised-button color="accent" (click)="onSetupExchange()">Yes</button>
         </div>
-        <div class="mdc-layout-grid__inner vertical-space">
+        <div *ngIf="!selectedExchange" class="mdc-layout-grid__inner vertical-space">
+            <p class="mdc-layout-grid__cell--span-12 mat-body">You haven't been added to any year's gifts exchange. Details will appear here once you're added to one</p>
+        </div>
+        <div class="vertical-space" *ngIf="isAdmin && selectedAdminExchange && (selectedAdminExchange.participatingFamilyMembers.length > 0) && (!selectedAdminExchange.assignedPeople)" style="display: flex;">
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">People have not been assigned for {{selectedAdminExchange.year}}
+                Will you like to assign now?</span>
+            <button mat-raised-button color="accent" (click)="onAssignPeople()">Assign</button>
+        </div>
+        <div *ngIf="(assignedAdults.length <= 0) && selectedExchange" class="mdc-layout-grid__inner vertical-space">
+            <p class="mdc-layout-grid__cell--span-12 mat-body">You haven't been assigned anyone for {{selectedExchange.year}}. Details will appear here when you're assigned people</p>
+        </div>
+        <div *ngIf="(assignedAdults.length > 0) && selectedExchange" class="mdc-layout-grid__inner vertical-space">
             <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Adults assigned to you</h4>
             <div *ngIf="isLoadingAdults" class="mdc-layout-grid__cell--span-12">
                 <app-loading></app-loading>

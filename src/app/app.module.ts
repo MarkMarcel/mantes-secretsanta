@@ -36,6 +36,7 @@ import { ImageUploadComponent } from './widgets/image-upload/image-upload.compon
 import { PictureComponent } from './widgets/picture/picture.component';
 import { LoadingComponent } from './widgets/loading/loading.component';
 import { AdultComponent } from './widgets/adult/adult.component';
+import { SantaComponent } from './widgets/santa/santa.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { AdultComponent } from './widgets/adult/adult.component';
     PictureComponent,
     LoadingComponent,
     AdultComponent,
+    SantaComponent,
   ],
   imports: [
     BrowserModule,

@@ -48,7 +48,7 @@ export class ExchangeService {
       }
     });
     if (this.validateAssignments(checkAdults, checkChildren, exchange.numberOfGiftsPerFamilyMember, numberOfGiftsPerChild)) {
-      batch.update(doc(this._exchangesCollection, exchangeId), { 'isAssigning': false })
+      batch.update(doc(this._exchangesCollection, exchangeId), { 'assignedPeople':true,'isAssigning': false })
       await batch.commit();
       return true;
     }else{
@@ -68,13 +68,13 @@ export class ExchangeService {
     return data.docs.map(doc => doc.data()).sort((exchange1, exchange2) => exchange1.year.localeCompare(exchange2.year));
   }
 
-  async getUserExchangeAssignedAdults(userExchange: UserExchange): Promise<User[]> {
-    const assignedAdults = await getDocs(query(this._usersRefCollection, where('id', 'in', userExchange.assignedAdults)).withConverter(userConverter));
-    return assignedAdults.docs.map(doc => doc.data()).sort((user1, user2) => user1.name.localeCompare(user2.name));
+  async getUserExchangeAssignedAdults(assignedAdults:string[]): Promise<User[]> {
+    const assignedAdultsData = await getDocs(query(this._usersRefCollection, where('id', 'in', assignedAdults)).withConverter(userConverter));
+    return assignedAdultsData.docs.map(doc => doc.data()).sort((user1, user2) => user1.name.localeCompare(user2.name));
   }
 
-  async getUserExchangeAssignedChild(userExchange: UserExchange): Promise<Child> {
-    return (await getDoc(doc(collection(this.firestore, FirestoreCollectionPath.children), userExchange.assignedChild!!).withConverter(childConverter))).data()!!;
+  async getUserExchangeAssignedChild(assignedChild:string): Promise<Child> {
+    return (await getDoc(doc(collection(this.firestore, FirestoreCollectionPath.children), assignedChild).withConverter(childConverter))).data()!!;
   }
 
   observeExchange(exchangeId: string, callback: (arg0: boolean) => void): Unsubscribe {
@@ -87,7 +87,7 @@ export class ExchangeService {
     const existing = await getDocs(query(this._exchangesCollection));
     const batch = writeBatch(this.firestore);
     const docRef = (!existing.empty) ? existing.docs[0].ref : doc(this._exchangesCollection);
-    const updatedExchange = new Exchange(docRef.id, exchange.familyMembersBuyingForChildren, exchange.numberOfGiftsPerFamilyMember, exchange.participatingChildren, exchange.participatingFamilyMembers, exchange.year);
+    const updatedExchange = new Exchange(docRef.id, exchange.assignedPeople, exchange.familyMembersBuyingForChildren, exchange.numberOfGiftsPerFamilyMember, exchange.participatingChildren, exchange.participatingFamilyMembers, exchange.year);
     const updatedExchangeSubDetails = { 'id': updatedExchange.id, 'year': updatedExchange.year };
     updatedExchange.participatingFamilyMembers.forEach((familyMemberId) => {
       const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPath.exchanges}/${docRef.id}`;

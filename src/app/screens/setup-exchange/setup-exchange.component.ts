@@ -61,7 +61,7 @@ export class SetupExchangeComponent implements AfterViewInit {
       const numberOfGifts = this.manteSecretSantaExchangeForm.controls.numberOfGifts.value!!;
       const participatingChildren = this.manteSecretSantaExchangeForm.controls.children.value!!;
       const participatingFamilyMembers = this.manteSecretSantaExchangeForm.controls.participating.value!!;
-      const exchange = new Exchange('',buyingForChildren,parseInt(numberOfGifts),participatingChildren,participatingFamilyMembers,this.year.toString());
+      const exchange = new Exchange('',false,buyingForChildren,parseInt(numberOfGifts),participatingChildren,participatingFamilyMembers,this.year.toString());
       await this._exchangeService.saveExchangeDetails(exchange);
       this.isLoading = false;
       this._router.navigate(['']);
