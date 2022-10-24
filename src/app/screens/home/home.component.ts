@@ -120,6 +120,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async setup() {
+    if (this.unsubscribe != null)
+      this.unsubscribe();
     this._userService.user$.subscribe((user) => {
       console.log("id", user?.id)
       this.user = user;
@@ -141,8 +143,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (this.unsubscribe != null)
       this.unsubscribe();
     this.unsubscribe = this._exchangeService.observeExchange(this.selectedExchange!!.id, (isAssigning) => {
-      if (this.isAssigning && !isAssigning)
+      if (this.isAssigning && !isAssigning){
         this._snackbar.open('Successfull assigned everyone!!');
+        this.setup();
+      }
       this.isAssigning = isAssigning;
       if (isAssigning) {
         this._assigningDialogRef = this._dialog.open(SantaComponent);
