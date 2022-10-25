@@ -22,7 +22,7 @@
         </mat-toolbar>
     </header>
     <div class="mdc-layout-grid">
-        <div *ngIf="user?.pictureUrl == PersonPlaceHolderUrl" style="display: flex;" class="vertical-spacing">
+        <div *ngIf="user?.pictureUrl == PersonPlaceHolderUrl" style="display: flex;" class="vertical-space">
             <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to add a picture to help others
                 identify you?</span>
             <button mat-raised-button color="accent" (click)="onUpdateImage()">Add Picture</button>

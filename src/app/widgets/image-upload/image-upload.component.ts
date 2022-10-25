@@ -56,7 +56,7 @@ export class ImageUploadComponent implements OnInit {
       const url = await this._imageService.saveImage(this._data.id, this.croppedImage, this._data.type);
       this._dialog.close(url);
     } catch (e: any) {
-      this._snackbar.open("Couldn't upload image");
+      this._snackbar.open("Failed to upload image");
      }
     finally {
       this.isLoading = false;

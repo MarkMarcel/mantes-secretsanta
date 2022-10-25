@@ -4,7 +4,7 @@ import { PersonPlaceHolderUrl } from "src/app/firebase-paths";
 export const AdminIds = [
     "ccZQKHt4uuV3JpDccPaOsZU5qIs1",
     "0nf0AWva8AbQs43Y5lyUIynJB5C2",
-    "qxrWPnpoNpaNwOC0xfI14ltRp712"
+    "Y9tTalIJ3heJOuq3d2ocV9zNRw03"
 ];
 
 export class User {

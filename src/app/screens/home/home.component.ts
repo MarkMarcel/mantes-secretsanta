@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { RoutePaths } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { ExchangeService } from 'src/app/exchange/exchange.service';
 import { PersonPlaceHolderUrl } from 'src/app/firebase-paths';
@@ -90,7 +91,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   onSetupExchange() {
-    this._router.navigate(['/setup-exchange']);
+    this._router.navigate([RoutePaths.setupExchange]);
   }
 
   onSetSelectedExchange(exchange: UserExchange) {
@@ -104,7 +105,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     try {
       this._authService.signOut();
     } catch (e: any) {
-      this._snackbar.open(`Couldn't logout`);
+      this._snackbar.open(`Failed to logout`);
     } finally {
       this.isLoading = false;
     }
@@ -113,7 +114,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private async checkUserRegistration() {
     const hasRegistered = await this._userService.getUserDetails(this._authService.auth.currentUser!!.uid)
     if (!hasRegistered)
-      this._router.navigate(['profile'])
+      this._router.navigate([RoutePaths.profile])
     else {
       this.setup();
     }

@@ -6,6 +6,7 @@ import { AuthenticationService } from 'src/app/authentication/authentication.ser
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/user/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RoutePaths } from 'src/app/app-routing.module';
 
 enum State {
   LOADING, OTP_READY, UNINITIALISED,
@@ -60,7 +61,7 @@ export class SignInComponent implements AfterViewInit {
       this.confirmationResult = await this._authService.requestOTP((this.authForm.value.phoneNumber as any).e164Number, (window as any).verifier)
       this.state = State.OTP_READY
     } catch (error) {
-      this._snackBar.open("Couldn't send code");
+      this._snackBar.open("Failed to send code. Go back and try again");
       this.back();
       console.log(error);
     }
@@ -75,7 +76,7 @@ export class SignInComponent implements AfterViewInit {
         if (hasRegistered)
           this._router.navigate([''])
         else
-          this._router.navigate(['profile'])
+          this._router.navigate([RoutePaths.profile])
       }
     } catch (error) {
       this._snackBar.open('Invalid or expired code');
