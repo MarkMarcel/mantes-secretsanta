@@ -59,9 +59,9 @@ export class ExchangeService {
     }
   }
 
-  async deleteItemWanted(exchangeId: string, itemId: string, userId: string) {
-    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPath.exchanges}/${exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
-    await deleteDoc(doc(collection(this.firestore, path), itemId));
+  async deleteItemWanted(item: ItemWanted) {
+    const path = `${this._usersRefCollection.path}/${item.userId}/${FirestoreCollectionPath.exchanges}/${item.exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
+    await deleteDoc(doc(collection(this.firestore, path), item.id));
   }
 
   async getAllExchanges(): Promise<Exchange[]> {
@@ -101,7 +101,6 @@ export class ExchangeService {
   }
 
   async saveItemWanted(item: ItemWanted) {
-    console.log("exchange",item.exchangeId)
     const path = `${this._usersRefCollection.path}/${item.userId}/${FirestoreCollectionPath.exchanges}/${item.exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
     await setDoc(doc(collection(this.firestore, path), item.id).withConverter(itemWantedConverter), item);
   }
@@ -120,9 +119,9 @@ export class ExchangeService {
     await batch.commit();
   }
 
-  async setItemWantedPurchased(exchangeId: string, itemId: string, userId: string) {
-    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPath.exchanges}/${exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
-    await setDoc(doc(collection(this.firestore, path), itemId), { 'purchased': true }, { merge: true });
+  async setItemWantedPurchased(item: ItemWanted) {
+    const path = `${this._usersRefCollection.path}/${item.userId}/${FirestoreCollectionPath.exchanges}/${item.exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
+    await setDoc(doc(collection(this.firestore, path), item.id), { 'purchased': true }, { merge: true });
   }
 
   private assignAdults(familyMemberId: string, remainingAdults: string[], numOfGifts: number): string[] {

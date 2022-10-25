@@ -49,7 +49,7 @@
                 <app-loading></app-loading>
             </div>
             <div *ngIf="!isLoadingAdults" class="mdc-layout-grid__cell--span-12">
-                <app-adult *ngFor="let adult of assignedAdults" [adult]="adult"></app-adult>
+                <app-adult *ngFor="let adult of assignedAdults" [adult]="adult" [exchangeId]="selectedExchange.id"></app-adult>
             </div>
         </div>
         <div *ngIf="(assignedChild != null)" class="mdc-layout-grid__inner">
@@ -71,7 +71,7 @@
             <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12 vertical-space" >
                 <button mat-flat-button color="primary" (click)="onAddItemWanted()">Add</button>
             </div>
-            <div *ngIf="selectedExchange" style="display:flex; flex-wrap:wrap; justify-content:space-evenly; width: 100%;">
+            <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12 horizontal-space" style="display:flex; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
                 <app-my-wanted-item *ngFor="let item of itemsWanted" [item]="item"></app-my-wanted-item>
             </div>
         </div>

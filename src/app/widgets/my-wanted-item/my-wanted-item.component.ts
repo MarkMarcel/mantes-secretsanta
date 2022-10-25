@@ -18,7 +18,7 @@ export class MyWantedItemComponent {
 
   async deleteItem() {
     try {
-      await this._exchangeService.deleteItemWanted(this.item!!.exchangeId, this.item!!.id, this.item!!.userId);
+      await this._exchangeService.deleteItemWanted(this.item!!);
     } catch (error) {
       this._snackbar.open("Couldn't delete item");
     }

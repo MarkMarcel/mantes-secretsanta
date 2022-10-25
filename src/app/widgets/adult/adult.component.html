@@ -4,7 +4,7 @@
             alt="Picture of {{adult?.name}}"></a>
     <div style="flex-grow: 1;">
         <h3 class="mat-h3 vertical-space">{{adult!!.name}}</h3>
-        <button type="button" color="accent" mat-flat-button>Wants</button>
+        <button type="button" color="accent" mat-flat-button (click)="seeItemsWanted()">See Items Wanted</button>
     </div>
 </div>
 <mat-divider class="vertical-space"></mat-divider>

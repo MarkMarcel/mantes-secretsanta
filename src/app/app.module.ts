@@ -39,6 +39,8 @@ import { AdultComponent } from './widgets/adult/adult.component';
 import { SantaComponent } from './widgets/santa/santa.component';
 import { AddItemWantedComponent } from './screens/add-item-wanted/add-item-wanted.component';
 import { MyWantedItemComponent } from './widgets/my-wanted-item/my-wanted-item.component';
+import { ItemsWantedComponent } from './widgets/items-wanted/items-wanted.component';
+import { ItemWantedComponent } from './widgets/item-wanted/item-wanted.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { MyWantedItemComponent } from './widgets/my-wanted-item/my-wanted-item.c
     SantaComponent,
     AddItemWantedComponent,
     MyWantedItemComponent,
+    ItemsWantedComponent,
+    ItemWantedComponent,
   ],
   imports: [
     BrowserModule,
