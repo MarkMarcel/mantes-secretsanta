@@ -25,7 +25,7 @@ export const userConverter = {
             children:user.childrenIds,
             married:user.isMarried,
             name: user.name,
-            picture: user.pictureUrl,
+            pictureUrl: user.pictureUrl,
             exchanges:user.secretSantaExchanges
         };
     },

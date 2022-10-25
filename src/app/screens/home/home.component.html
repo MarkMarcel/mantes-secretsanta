@@ -66,9 +66,9 @@
                 </div>
             </div>
         </div>
-        <div class="mdc-layout-grid__inner">
-            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Items you'll like for {{selectedExchange?.year}}</h4>
-            <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12 vertical-space" >
+        <div *ngIf="selectedExchange" class="mdc-layout-grid__inner">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Items you'll like for {{selectedExchange!!.year}}</h4>
+            <div class="mdc-layout-grid__cell--span-12 vertical-space" >
                 <button mat-flat-button color="primary" (click)="onAddItemWanted()">Add</button>
             </div>
             <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12 horizontal-space" style="display:flex; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
