@@ -14,6 +14,7 @@ import { SantaComponent } from 'src/app/widgets/santa/santa.component';
 import { Child } from 'src/models/child';
 import { Exchange } from 'src/models/exchange';
 import { ImageUploadMeta } from 'src/models/image-upload-meta';
+import { ItemWanted } from 'src/models/item-wanted';
 import { AdminIds, User } from 'src/models/user';
 import { UserExchange } from 'src/models/user-exchange';
 
@@ -32,6 +33,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   isLoading = true;
   isLoadingAdults = false;
   isLoadingChild = false;
+  itemsWanted:ItemWanted[] = [];
   PersonPlaceHolderUrl = PersonPlaceHolderUrl;
   reloadRequired = false;
   selectedAdminExchange: Exchange | null | undefined = null;
@@ -43,6 +45,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   private _assigningDialogRef: MatDialogRef<SantaComponent> | null = null;
   private _dialogRef: Subscription | null = null;
+  private _itemsWantedSubscription:Subscription|null = null;
   private _userSubscription: Subscription | null = null;
 
   constructor(
@@ -63,6 +66,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.checkUserRegistration();
+  }
+
+  onAddItemWanted(){
+    this._router.navigate(['add-item-wanted',this.selectedExchange!!.id])
   }
 
   async onAssignPeople() {
@@ -142,6 +149,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.selectedAdminExchange = this.adminExchanges.find((exchange) => (exchange.id == this.selectedExchange!!.id));
     if (this.unsubscribe != null)
       this.unsubscribe();
+      this._itemsWantedSubscription?.unsubscribe();
     this.unsubscribe = this._exchangeService.observeExchange(this.selectedExchange!!.id, (isAssigning) => {
       if (this.isAssigning && !isAssigning){
         this._snackbar.open('Successfull assigned everyone!!');
@@ -154,6 +162,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         this._assigningDialogRef?.close();
       }
     });
+    this._itemsWantedSubscription = this._exchangeService.observeItemsWanted(this.selectedExchange!!.id,this.user!!.id).subscribe(items => {
+      this.itemsWanted = items
+    })
     this.getExchangeData();
   }
 

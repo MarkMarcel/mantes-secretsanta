@@ -36,6 +36,7 @@ export class SignInComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit(): void {
+    if(this._authService.auth.currentUser != null) this._router.navigate(['']);
     (window as any).verifier = new RecaptchaVerifier('request-otp', {
       'size': 'invisible',
       'callback': (_response: any) => {

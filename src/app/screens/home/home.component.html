@@ -36,7 +36,7 @@
             <p class="mdc-layout-grid__cell--span-12 mat-body">You haven't been added to any year's gifts exchange. Details will appear here once you're added to one</p>
         </div>
         <div class="vertical-space" *ngIf="isAdmin && selectedAdminExchange && (selectedAdminExchange.participatingFamilyMembers.length > 0) && (!selectedAdminExchange.assignedPeople)" style="display: flex;">
-            <span style="flex-grow: 1;" class="horizontal-space mat-body">People have not been assigned for {{selectedAdminExchange.year}}
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">People have not been assigned for {{selectedAdminExchange.year}}.
                 Will you like to assign now?</span>
             <button mat-raised-button color="accent" (click)="onAssignPeople()">Assign</button>
         </div>
@@ -64,6 +64,15 @@
                 <div style="flex-grow: 1;">
                     <h3 class="mat-h3">{{assignedChild.name}}</h3>
                 </div>
+            </div>
+        </div>
+        <div class="mdc-layout-grid__inner">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Items you'll like for {{selectedExchange?.year}}</h4>
+            <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12 vertical-space" >
+                <button mat-flat-button color="primary" (click)="onAddItemWanted()">Add</button>
+            </div>
+            <div *ngIf="selectedExchange" style="display:flex; flex-wrap:wrap; justify-content:space-evenly; width: 100%;">
+                <app-my-wanted-item *ngFor="let item of itemsWanted" [item]="item"></app-my-wanted-item>
             </div>
         </div>
     </div>

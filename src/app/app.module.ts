@@ -37,6 +37,8 @@ import { PictureComponent } from './widgets/picture/picture.component';
 import { LoadingComponent } from './widgets/loading/loading.component';
 import { AdultComponent } from './widgets/adult/adult.component';
 import { SantaComponent } from './widgets/santa/santa.component';
+import { AddItemWantedComponent } from './screens/add-item-wanted/add-item-wanted.component';
+import { MyWantedItemComponent } from './widgets/my-wanted-item/my-wanted-item.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import { SantaComponent } from './widgets/santa/santa.component';
     LoadingComponent,
     AdultComponent,
     SantaComponent,
+    AddItemWantedComponent,
+    MyWantedItemComponent,
   ],
   imports: [
     BrowserModule,

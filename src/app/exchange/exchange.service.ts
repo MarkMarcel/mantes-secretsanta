@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { collection, CollectionReference, doc, Firestore, getDoc, getDocs, onSnapshot, query, setDoc, Unsubscribe, updateDoc, where, writeBatch } from '@angular/fire/firestore';
+import { collection, collectionData, CollectionReference, deleteDoc, doc, Firestore, getDoc, getDocs, onSnapshot, query, setDoc, Unsubscribe, updateDoc, where, writeBatch } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { Child, childConverter } from 'src/models/child';
 import { Exchange, exchangeConverter } from 'src/models/exchange';
+import { ItemWanted, itemWantedConverter } from 'src/models/item-wanted';
 import { User, userConverter } from 'src/models/user';
 import { UserExchange, userExchangeConverter } from 'src/models/user-exchange';
 import { FirestoreCollectionPath } from '../firebase-paths';
@@ -48,13 +50,18 @@ export class ExchangeService {
       }
     });
     if (this.validateAssignments(checkAdults, checkChildren, exchange.numberOfGiftsPerFamilyMember, numberOfGiftsPerChild)) {
-      batch.update(doc(this._exchangesCollection, exchangeId), { 'assignedPeople':true,'isAssigning': false })
+      batch.update(doc(this._exchangesCollection, exchangeId), { 'assignedPeople': true, 'isAssigning': false })
       await batch.commit();
       return true;
-    }else{
+    } else {
       await setDoc(doc(this._exchangesCollection, exchangeId), { 'isAssigning': false }, { merge: true });
       return false;
     }
+  }
+
+  async deleteItemWanted(exchangeId: string, itemId: string, userId: string) {
+    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPath.exchanges}/${exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
+    await deleteDoc(doc(collection(this.firestore, path), itemId));
   }
 
   async getAllExchanges(): Promise<Exchange[]> {
@@ -68,12 +75,17 @@ export class ExchangeService {
     return data.docs.map(doc => doc.data()).sort((exchange1, exchange2) => exchange1.year.localeCompare(exchange2.year));
   }
 
-  async getUserExchangeAssignedAdults(assignedAdults:string[]): Promise<User[]> {
+  getIdForNewItemWanted(exchangeId: string, userId: string): string {
+    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPath.exchanges}/${exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
+    return doc(collection(this.firestore, path)).id;
+  }
+
+  async getUserExchangeAssignedAdults(assignedAdults: string[]): Promise<User[]> {
     const assignedAdultsData = await getDocs(query(this._usersRefCollection, where('id', 'in', assignedAdults)).withConverter(userConverter));
     return assignedAdultsData.docs.map(doc => doc.data()).sort((user1, user2) => user1.name.localeCompare(user2.name));
   }
 
-  async getUserExchangeAssignedChild(assignedChild:string): Promise<Child> {
+  async getUserExchangeAssignedChild(assignedChild: string): Promise<Child> {
     return (await getDoc(doc(collection(this.firestore, FirestoreCollectionPath.children), assignedChild).withConverter(childConverter))).data()!!;
   }
 
@@ -81,6 +93,17 @@ export class ExchangeService {
     return onSnapshot(doc(this._exchangesCollection, exchangeId), (doc) => {
       callback(doc.data()!!['isAssigning']);
     });
+  }
+
+  observeItemsWanted(exchangeId: string, userId: string): Observable<ItemWanted[]> {
+    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPath.exchanges}/${exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
+    return collectionData(collection(this.firestore, path).withConverter(itemWantedConverter))
+  }
+
+  async saveItemWanted(item: ItemWanted) {
+    console.log("exchange",item.exchangeId)
+    const path = `${this._usersRefCollection.path}/${item.userId}/${FirestoreCollectionPath.exchanges}/${item.exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
+    await setDoc(doc(collection(this.firestore, path), item.id).withConverter(itemWantedConverter), item);
   }
 
   async saveExchangeDetails(exchange: Exchange) {
@@ -95,6 +118,11 @@ export class ExchangeService {
     });
     batch.set(docRef, exchangeConverter.toFirestore(updatedExchange));
     await batch.commit();
+  }
+
+  async setItemWantedPurchased(exchangeId: string, itemId: string, userId: string) {
+    const path = `${this._usersRefCollection.path}/${userId}/${FirestoreCollectionPath.exchanges}/${exchangeId}/${FirestoreCollectionPath.itemsWanted}`;
+    await setDoc(doc(collection(this.firestore, path), itemId), { 'purchased': true }, { merge: true });
   }
 
   private assignAdults(familyMemberId: string, remainingAdults: string[], numOfGifts: number): string[] {
