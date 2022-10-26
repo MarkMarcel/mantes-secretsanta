@@ -140,14 +140,15 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.selectedExchange = this.exchanges.find(exchange => (exchange.year == this.year)) ?? this.exchanges[0];
     if (this.isAdmin) {
       this.adminExchanges = await this._exchangeService.getAllExchanges();
-      this.selectedAdminExchange = this.adminExchanges.find((exchange) => (exchange.id == this.selectedExchange!!.id));
     }
     this.isLoading = false;
     if (this.selectedExchange) this.setupSelectedExchange()
   }
 
   private async setupSelectedExchange() {
-    this.selectedAdminExchange = this.adminExchanges.find((exchange) => (exchange.id == this.selectedExchange!!.id));
+    if (this.isAdmin){
+      this.selectedAdminExchange = this.adminExchanges.find((exchange) => (exchange.id == this.selectedExchange!!.id));
+    }
     if (this.unsubscribe != null)
       this.unsubscribe();
       this._itemsWantedSubscription?.unsubscribe();
