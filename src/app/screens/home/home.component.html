@@ -1,0 +1,80 @@
+<app-loading *ngIf="isLoading || isAssigning"></app-loading>
+<div *ngIf="!isLoading || !isAssigning">
+    <header>
+        <mat-toolbar>
+            <img [matMenuTriggerFor]="logout" style="border-radius:50%; border: 5px solid #fef6e5; height: 48px;"
+                class="horizontal-space" [src]="user?.pictureUrl" />
+            <span *ngIf="(exchanges.length < 1) && !isLoading">Not Added To A Family Gifts Exchange Yet</span>
+            <span *ngIf="(exchanges.length >= 1)">
+                {{selectedExchange?.year}} Mante Family Gifts Exchange
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="dropdown for years">
+                    <mat-icon>expand_more</mat-icon>
+                </button>
+            </span>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngFor="let exchange of exchanges"
+                    (click)="onSetSelectedExchange(exchange)">{{exchange.year}}</button>
+            </mat-menu>
+            <mat-menu #logout="matMenu">
+                <button mat-menu-item (click)="onUpdateImage()">Change picture</button>
+                <button mat-menu-item (click)="onEditProfile()">Profile</button>
+                <button mat-menu-item (click)="onSignOut()">Logout</button>
+            </mat-menu>
+        </mat-toolbar>
+    </header>
+    <div class="mdc-layout-grid">
+        <div *ngIf="user?.pictureUrl == PersonPlaceHolderUrl" style="display: flex;" class="vertical-space">
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to add a picture to help others
+                identify you?</span>
+            <button mat-raised-button color="accent" (click)="onUpdateImage()">Add Picture</button>
+        </div>
+        <div class="vertical-space" *ngIf="isAdmin" style="display: flex;">
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">Will you like to {{setupUpdate}} {{year}}
+                Mante family gifts exchange configuration?</span>
+            <button mat-raised-button color="accent" (click)="onSetupExchange()">Yes</button>
+        </div>
+        <div *ngIf="!selectedExchange" class="mdc-layout-grid__inner vertical-space">
+            <p class="mdc-layout-grid__cell--span-12 mat-body">You haven't been added to any year's gifts exchange. Details will appear here once you're added to one</p>
+        </div>
+        <div class="vertical-space" *ngIf="isAdmin && selectedAdminExchange && (selectedAdminExchange.participatingFamilyMembers.length > 0) && (!selectedAdminExchange.assignedPeople)" style="display: flex;">
+            <span style="flex-grow: 1;" class="horizontal-space mat-body">People have not been assigned for {{selectedAdminExchange.year}}.
+                Will you like to assign now?</span>
+            <button mat-raised-button color="accent" (click)="onAssignPeople()">Assign</button>
+        </div>
+        <div *ngIf="(assignedAdults.length <= 0) && selectedExchange" class="mdc-layout-grid__inner vertical-space">
+            <p class="mdc-layout-grid__cell--span-12 mat-body">You haven't been assigned anyone for {{selectedExchange.year}}. Details will appear here when you're assigned people</p>
+        </div>
+        <div *ngIf="(assignedAdults.length > 0) && selectedExchange" class="mdc-layout-grid__inner vertical-space">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Adults assigned to you</h4>
+            <div *ngIf="isLoadingAdults" class="mdc-layout-grid__cell--span-12">
+                <app-loading></app-loading>
+            </div>
+            <div *ngIf="!isLoadingAdults" class="mdc-layout-grid__cell--span-12">
+                <app-adult *ngFor="let adult of assignedAdults" [adult]="adult" [exchangeId]="selectedExchange.id"></app-adult>
+            </div>
+        </div>
+        <div *ngIf="(assignedChild != null)" class="mdc-layout-grid__inner">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Child assigned to you</h4>
+            <div *ngIf="isLoadingChild" class="mdc-layout-grid__cell--span-12">
+                <app-loading></app-loading>
+            </div>
+            <div style="align-items: center; display: flex; width: 100%;" class="vertical-space">
+                <a [href]="assignedChild.pictureUrl"><img [src]="assignedChild.pictureUrl"
+                        style="border-radius:50%; border: 5px solid #fef6e5; width: 60px;" class="horizontal-space"
+                        alt="Picture of {{assignedChild.name}}"></a>
+                <div style="flex-grow: 1;">
+                    <h3 class="mat-h3">{{assignedChild.name}}</h3>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedExchange" class="mdc-layout-grid__inner">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h2">Items you'll like for {{selectedExchange!!.year}}</h4>
+            <div class="mdc-layout-grid__cell--span-12 vertical-space" >
+                <button mat-flat-button color="primary" (click)="onAddItemWanted()">Add</button>
+            </div>
+            <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12 horizontal-space" style="display:flex; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
+                <app-my-wanted-item *ngFor="let item of itemsWanted" [item]="item"></app-my-wanted-item>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+<app-loading *ngIf="isLoading"></app-loading>
+<form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="detailsForm" class="mdc-layout-grid screen">
+    <header class="mdc
+    -layout-grid__inner">
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Sort Out Your Details</h1>
+    </header>
+    <div *ngIf="(step >= 1)" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1 question-space">What does everyone in the family call you?
+        </p>
+        <mat-form-field class="mdc-layout-grid__cell--span-12" appearance="standard">
+            <input matInput formControlName="name" placeholder="Name" />
+            <mat-error *ngIf="detailsForm.controls.name.invalid">Required</mat-error>
+        </mat-form-field>
+    </div>
+    <div *ngIf="(step >= 2)" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">Are you married?</p>
+        <mat-radio-group formControlName="isMarried" class="mdc-layout-grid__cell" aria-label="Are you married?">
+            <mat-radio-button class="horizontal-space" value=false>No</mat-radio-button>
+            <mat-radio-button value=true>Yes</mat-radio-button>
+            <mat-error *ngIf="detailsForm.controls.isMarried.invalid">Required</mat-error>
+        </mat-radio-group>
+    </div>
+    <div *ngIf="(step >= 3) && !hasAnsweredHasChildren" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Do you have children under 10 years?</p>
+        <span class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button (click)="setHasChildren(false)">No</button>
+            <button type="button" mat-flat-button (click)="setHasChildren(true)">Yes</button>
+        </span>
+    </div>
+    <div *ngIf="(step >= 3) && hasChildren" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Select your children</p>
+        <mat-form-field class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" appearance="standard">
+            <mat-select multiple formControlName="children">
+                <mat-option *ngFor="let child of children" [value]="child.id">{{child.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-error *ngIf="(detailsForm.controls.children.invalid) && hasChildren"
+            class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 vertical-space">Select your children</mat-error>
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 vertical-space">
+            <app-child *ngFor="let child of myChildren" [child]="child"></app-child>
+        </div>
+    </div>
+    <div class="mdc-layout-grid__inner">
+        <p *ngIf="(step <= 2)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-icon-button aria-label="Next question" (click)="nextQuestion()">
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
+        </p>
+        <p *ngIf="(step >= 3) && hasAnsweredHasChildren" style="text-align: center;"
+            class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button aria-label="Review" color="accent" (click)="review()">Review</button>
+        </p>
+    </div>
+</form>
+<section *ngIf="!isLoading && (state == State.REVIEW)" class="mdc-layout-grid screen">
+    <header class="mdc-layout-grid__inner">
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1 vertical-space">IMPORTANT</h1>
+        <h3 class="mdc-layout-grid__cell--span-12 mat-h2">Please double check your details to ensure it's accurate for a smooth Mante Family Gifts Exchange</h3>
+    </header>
+    <div class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body">{{detailsForm.controls.name.value}}</p>
+        <p class="mdc-layout-grid__cell--span-12 mat-body">
+            <span *ngIf="(detailsForm.controls.isMarried.value) == 'true'">Married</span>
+            <span *ngIf="(detailsForm.controls.isMarried.value) == 'false'">Not married</span>
+        </p>
+        <p class="mdc-layout-grid__cell--span-12 mat-body">
+            <span *ngIf="hasChildren">Has</span>
+            <span *ngIf="!hasChildren">Does not have</span>
+            children under 10 years
+        </p>
+        <h4 *ngIf="hasChildren" class="mdc-layout-grid__cell--span-12 mat-h2">Your children</h4>
+        <mat-list *ngIf="hasChildren" class="mdc-layout-grid__cell--span-12">
+            <mat-list-item *ngFor="let child of myChildren">{{child.name}}</mat-list-item>
+        </mat-list>
+    </div>
+    <div class="mdc-layout-grid__inner">
+        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-icon-button aria-label="Back to form" (click)="editForm()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </p>
+        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button color="primary" aria-label="Done"
+                (click)="updateUserDetails()">Done</button>
+        </p>
+    </div>
+</section>

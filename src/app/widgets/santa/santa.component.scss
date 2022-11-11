@@ -1,0 +1,100 @@
+body{
+    background-color: #ffffff;
+    padding: 0;
+    margin: 0;
+  }
+  .container{
+    height: 480px;
+    width: 350px;
+    -webkit-transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+  svg{
+      position: absolute;
+      top: 0;
+      left: 0;
+  }
+  .plane{
+    position: relative;
+    -webkit-animation: float 3s infinite;
+            animation: float 3s infinite;
+  }
+  @-webkit-keyframes float{
+    50%{
+      -webkit-transform: translateY(25px);
+              transform: translateY(25px);
+    }
+  }
+  @keyframes float{
+    50%{
+      -webkit-transform: translateY(25px);
+              transform: translateY(25px);
+    }
+  }
+  .hand{
+    -webkit-transform: rotate(10deg);
+        -ms-transform: rotate(10deg);
+            transform: rotate(10deg);
+    -webkit-animation: wave 1.5s infinite;
+            animation: wave 1.5s infinite;
+    -webkit-transform-origin: center;
+        -ms-transform-origin: center;
+            transform-origin: center; 
+  }
+  .blade{
+    -webkit-animation:spin 1s infinite linear;
+            animation:spin 1s infinite linear;
+    -webkit-transform-origin: 50% 54%;
+        -ms-transform-origin: 50% 54%;
+            transform-origin: 50% 54%;
+  }
+  @-webkit-keyframes spin{
+    100%{
+      -webkit-transform: rotateX(360deg);
+              transform: rotateX(360deg);
+    }
+  }
+  @keyframes spin{
+    100%{
+      -webkit-transform: rotateX(360deg);
+              transform: rotateX(360deg);
+    }
+  }
+  @-webkit-keyframes wave{
+    50%{
+      -webkit-transform: rotate(-10deg);
+              transform: rotate(-10deg);
+    }
+  }
+  @keyframes wave{
+    50%{
+      -webkit-transform: rotate(-10deg);
+              transform: rotate(-10deg);
+    }
+  }
+  a{
+      color: #F40009;
+      font-family: "Poppins",sans-serif;
+      position:absolute;
+      right:20px ;
+      top:20px;
+      border:2px solid #F40009;
+      text-decoration:none;
+  }
+  @media screen and (min-width: 451px) {
+    a{
+      font-size: 20px;
+       padding:8px 12px 8px 12px;
+    }
+  }
+  
+  @media screen and (max-width: 450px) {
+    a{
+      font-size: 14px;
+       padding:5px 8px 5px 8px;
+    }
+  }

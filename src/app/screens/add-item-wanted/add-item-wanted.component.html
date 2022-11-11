@@ -1,0 +1,84 @@
+<app-loading *ngIf="isLoading"></app-loading>
+<form *ngIf="!isLoading && (state == State.FORM)" [formGroup]="itemForm" class="mdc-layout-grid screen">
+    <header class="mdc
+    -layout-grid__inner">
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Let's Sort Out Details of Item</h1>
+    </header>
+    <div *ngIf="(step >= 1)" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1 question-space">What's the name of the item?</p>
+        <mat-form-field class="mdc-layout-grid__cell--span-12" appearance="standard">
+            <input matInput formControlName="name" placeholder="Name of item" />
+            <mat-error *ngIf="itemForm.controls.name.invalid">Required</mat-error>
+        </mat-form-field>
+    </div>
+    <div *ngIf="(step >= 2) && !hasAnsweredHasPicture" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Do you have a picture of {{itemForm.controls.name.value}}?
+        </p>
+        <span class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button (click)="setHasPicture(true)">Yes</button>
+            <button type="button" mat-flat-button (click)="setHasPicture(false)">No</button>
+        </span>
+    </div>
+    <div *ngIf="(step >= 2) && hasPicture" class="vertical-space">
+        <img style="height: 300px; width:300px" [src]="itemForm.controls.pictureUrl.value" />
+    </div>
+    <div *ngIf="(step >= 3) && !hasAnsweredHasGoogleMapsLink" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Do you have a Google Maps link to a location where
+            {{itemForm.controls.name.value}} can be bought? </p>
+        <span class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button (click)="setHasGoogleMapsUrl(true)">Yes</button>
+            <button type="button" mat-flat-button (click)="setHasGoogleMapsUrl(false)">No</button>
+        </span>
+    </div>
+    <div *ngIf="(step >= 3) && hasGoogleMapsUrl" class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1 question-space">Paste the Google Maps link to a location
+            where {{itemForm.controls.name.value}} can be bought
+        </p>
+        <mat-form-field class="mdc-layout-grid__cell--span-12" appearance="standard">
+            <input type="url" matInput formControlName="googleMapsUrl" placeholder="Google maps link" />
+        </mat-form-field>
+    </div>
+    <div class="mdc-layout-grid__inner">
+        <p *ngIf="(step <= 2)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-icon-button aria-label="Next question" (click)="nextQuestion()">
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
+        </p>
+        <p *ngIf="(step >= 2)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-icon-button aria-label="Back to form" (click)="back()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </p>
+        <p *ngIf="(step >= 3)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button aria-label="Review" color="accent" (click)="review()">Review</button>
+        </p>
+    </div>
+</form>
+<section *ngIf="!isLoading && (state == State.REVIEW)" class="mdc-layout-grid screen">
+    <header class="mdc-layout-grid__inner">
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1 vertical-space">Item Wanted</h1>
+    </header>
+    <div class="mdc-layout-grid__inner vertical-space">
+        <p class="mdc-layout-grid__cell--span-12 mat-body">{{itemForm.controls.name.value}}</p>
+        <div class="mdc-layout-grid__cell--span-12 mat-body">
+            <img *ngIf="hasPicture" style="height: 300px; width:300px" [src]="itemForm.controls.pictureUrl.value" />
+            <span *ngIf="!hasPicture">Don't have picture of {{itemForm.controls.name.value}}</span>
+        </div>
+        <div class="mdc-layout-grid__cell--span-12 mat-body">
+            <h4 *ngIf="hasGoogleMapsUrl" class="mat-h4">Google maps link to a location where {{itemForm.controls.name.value}} can be bought</h4>
+            <a *ngIf="hasGoogleMapsUrl" class="mat-h4" [href]="itemForm.controls.googleMapsUrl.value">{{itemForm.controls.googleMapsUrl.value}}</a>
+            <span *ngIf="!hasGoogleMapsUrl">Don't have a Google Maps link to a location where {{itemForm.controls.name.value}} can be bought</span>
+        </div>
+    </div>
+    <div class="mdc-layout-grid__inner">
+        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-icon-button aria-label="Back to form" (click)="editForm()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </p>
+        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button type="button" mat-flat-button color="primary" aria-label="Save"
+                (click)="saveItemWanted()">Save</button>
+        </p>
+    </div>
+</section>

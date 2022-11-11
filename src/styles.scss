@@ -1,0 +1,146 @@
+@use '@angular/material' as mat;
+@use "@material/layout-grid/mdc-layout-grid";
+
+/* For use in src/lib/core/theming/_palette.scss */
+$md-primary: (
+    50 : #e3ebe7,
+    100 : #b9cec2,
+    200 : #8bad99,
+    300 : #5c8c70,
+    400 : #397452,
+    500 : #165b33,
+    600 : #13532e,
+    700 : #104927,
+    800 : #0c4020,
+    900 : #062f14,
+    A100 : #69ff94,
+    A200 : #36ff6f,
+    A400 : #03ff4b,
+    A700 : #00e842,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+/* For use in src/lib/core/theming/_palette.scss */
+$md-accent: (
+    50 : #fef6e5,
+    100 : #fde8bf,
+    200 : #fcd994,
+    300 : #fac969,
+    400 : #f9be49,
+    500 : #f8b229,
+    600 : #f7ab24,
+    700 : #f6a21f,
+    800 : #f59919,
+    900 : #f38a0f,
+    A100 : #ffffff,
+    A200 : #fff5eb,
+    A400 : #ffdcb8,
+    A700 : #ffcf9f,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+
+$primary: mat.define-palette($md-primary, 500);
+$accent: mat.define-palette($md-accent, 500, A100, A400);
+
+$theme: mat.define-light-theme((
+ color: (
+   primary: $primary,
+   accent: $accent,
+ )
+));
+
+@include mat.all-component-themes($theme);
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.test{
+    width: 350px !important;
+}
+.horizontal-space{
+    margin-right: 16px;
+}
+
+.question-space{
+    margin-bottom: 8px;
+}
+
+.screen{
+    max-width: 500px;
+}
+
+.vertical-space{
+    margin-bottom: 16px;
+}
+

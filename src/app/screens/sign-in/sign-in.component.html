@@ -1,0 +1,35 @@
+<app-loading *ngIf="(state == State.LOADING)"></app-loading>
+<form [formGroup]="authForm" class="mdc-layout-grid screen">
+    <div class="mdc-layout-grid__inner" *ngIf="(state == State.UNINITIALISED) || !isRecaptchaReady">
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Enter Active Phone Number</h1>
+        <p class="mdc-layout-grid__cell--span-12">A code will be sent to you via SMS</p>
+        <ngx-intl-tel-input [cssClass]="'mdc-layout-grid__cell--span-12 mat-body test'" [enableAutoCountrySelect]="true"
+            [enablePlaceholder]="true" [selectedCountryISO]="CountryISO.Ghana" [maxLength]="15" [phoneValidation]="true"
+            [separateDialCode]="false"
+            [onlyCountries]="[CountryISO.Ghana,CountryISO.UnitedStates,CountryISO.UnitedKingdom,CountryISO.Germany]"
+            [numberFormat]="PhoneNumberFormat.National" name="phoneNumber" formControlName="phoneNumber"
+            inputId="phone_number">
+        </ngx-intl-tel-input>
+        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button mat-icon-button aria-label="Request code" (click)="requestOTP()">
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
+        </p>
+    </div>
+    <div class="mdc-layout-grid__inner" *ngIf="(state == State.OTP_READY) && isRecaptchaReady">
+        <h1 class="mdc-layout-grid__cell--span-12 mat-h1">Enter Code Received</h1>
+        <p class="mdc-layout-grid__cell--span-12">Didn't receive code? Go back and try again</p>
+        <mat-form-field appearance="standard" class="mdc-layout-grid__cell--span-12">
+            <input matInput formControlName="code" placeholder="123456">
+        </mat-form-field>
+        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button mat-icon-button aria-label="back" (click)="back()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </p>
+        <p style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+            <button mat-flat-button aria-label="Verify code" (click)="verifyOTP()">Verify</button>
+        </p>
+    </div>
+    <span id="request-otp"></span>
+</form>

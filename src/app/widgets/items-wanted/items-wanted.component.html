@@ -1,0 +1,14 @@
+<div class="vertical-space" style="width: 100%;">
+    <button mat-icon-button (click)="close()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<app-loading *ngIf="isLoading"></app-loading>
+<div class="mdc-layout-grid" style="width: 100%;">
+    <div class="mdc-layout-grid__inner">
+        <div *ngIf="!isLoading && (itemsWanted.length > 0)" class="mdc-layout-grid__cell--span-12" style="display:flex; flex-wrap:wrap; justify-content:space-evenly; width: 100%;">
+            <app-item-wanted *ngFor="let item of itemsWanted" [item]="item"></app-item-wanted>
+        </div>
+        <p *ngIf="!isLoading && (itemsWanted.length <= 0)" class="mdc-layout-grid__cell--span-12 mat-body">{{name}} Hasn't added any wanted items. Details will appear here once {{name}} adds any wanted items.</p>
+    </div>
+</div>
