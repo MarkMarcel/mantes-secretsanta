@@ -85,6 +85,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this._router.navigate([RoutePaths.editProfile,this.user!!.id]);
   }
 
+  onReviewExchangeDetails(){
+    this._router.navigate([RoutePaths.setupExchange,this.selectedAdminExchange!!.id]);
+  }
+
   onUpdateImage() {
     this._dialogRef?.unsubscribe();
     this._dialogRef = this._dialog.open<ImageUploadComponent, ImageUploadMeta, string>(ImageUploadComponent, { data: { id: this.user!!.id, type: ImageType.USER } }).afterClosed().subscribe((url) => {

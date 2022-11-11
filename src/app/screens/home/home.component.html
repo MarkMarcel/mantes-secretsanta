@@ -38,8 +38,9 @@
         </div>
         <div class="vertical-space" *ngIf="isAdmin && selectedAdminExchange && (selectedAdminExchange.participatingFamilyMembers.length > 0) && (!selectedAdminExchange.assignedPeople)" style="display: flex;">
             <span style="flex-grow: 1;" class="horizontal-space mat-body">People have not been assigned for {{selectedAdminExchange.year}}.
-                Will you like to assign now?</span>
-            <button mat-raised-button color="accent" (click)="onAssignPeople()">Assign</button>
+                Will you like to assign people now?</span>
+            <button mat-raised-button color="accent" class="horizontal-space" (click)="onAssignPeople()">Assign</button>
+            <button mat-raised-button color="accent" (click)="onReviewExchangeDetails()">Review</button>
         </div>
         <div *ngIf="(assignedAdults.length <= 0) && selectedExchange" class="mdc-layout-grid__inner vertical-space">
             <p class="mdc-layout-grid__cell--span-12 mat-body">You haven't been assigned anyone for {{selectedExchange.year}}. Details will appear here when you're assigned people</p>

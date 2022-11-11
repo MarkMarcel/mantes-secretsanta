@@ -64,6 +64,15 @@ export class ExchangeService {
     await deleteDoc(doc(collection(this.firestore, path), item.id));
   }
 
+  async getExchange(exchangeId: string): Promise<Exchange | null> {
+    const exchangeData = await getDoc(doc(this._exchangesCollection, exchangeId).withConverter(exchangeConverter));
+    if (exchangeData.exists()) {
+      return exchangeData.data();
+    } else {
+      return null;
+    }
+  }
+
   async getAllExchanges(): Promise<Exchange[]> {
     const data = await getDocs(query(this._exchangesCollection).withConverter(exchangeConverter));
     return data.docs.map(doc => doc.data()).sort((exchange1, exchange2) => exchange1.year.localeCompare(exchange2.year));
@@ -117,9 +126,9 @@ export class ExchangeService {
     });
     batch.set(docRef, exchangeConverter.toFirestore(updatedExchange));
     await batch.commit();
-    if(!existing.empty){
+    if (!existing.empty) {
       const prevExchangeDetails = existing.docs[0].data()
-      this.deletePreviousExchangeDetails(updatedExchange.id,prevExchangeDetails.participatingFamilyMembers.filter(id => !(exchange.participatingFamilyMembers.includes(id))))
+      this.deletePreviousExchangeDetails(updatedExchange.id, prevExchangeDetails.participatingFamilyMembers.filter(id => !(exchange.participatingFamilyMembers.includes(id))))
     }
   }
 
@@ -148,11 +157,11 @@ export class ExchangeService {
     return eligibleChildren[Math.floor(Math.random() * eligibleChildren.length)];
   }
 
-  private async deletePreviousExchangeDetails(exchangeId:string,familyMembers:string[]){
+  private async deletePreviousExchangeDetails(exchangeId: string, familyMembers: string[]) {
     const batch = writeBatch(this.firestore);
     familyMembers.forEach((familyMemberId) => {
       const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPath.exchanges}/${exchangeId}`;
-      batch.delete(doc(this.firestore,path));
+      batch.delete(doc(this.firestore, path));
     });
     await batch.commit();
   }
