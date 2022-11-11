@@ -70,7 +70,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   onAddItemWanted(){
-    this._router.navigate(['add-item-wanted',this.selectedExchange!!.id])
+    this._router.navigate([RoutePaths.addItemWanted,this.selectedExchange!!.id]);
   }
 
   async onAssignPeople() {
@@ -79,6 +79,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this._assigningDialogRef?.close();
       this._snackbar.open('Failed to assign people');
     }
+  }
+
+  onEditProfile(){
+    this._router.navigate([RoutePaths.editProfile,this.user!!.id]);
   }
 
   onUpdateImage() {
@@ -131,7 +135,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (this.unsubscribe != null)
       this.unsubscribe();
     this._userService.user$.subscribe((user) => {
-      console.log("id", user?.id)
       this.user = user;
       this.isAdmin = AdminIds.includes(user!!.id);
     });

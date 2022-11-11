@@ -52,7 +52,6 @@ export class AddItemWantedComponent implements OnDestroy {
     this._routeSubscription = this._route.paramMap.subscribe((paramMap:ParamMap) => {
         this.exchangeId = paramMap.get('exchangeId') as string;
         this.docId = _exchangeService.getIdForNewItemWanted(this.exchangeId, _authService.auth.currentUser!!.uid);
-        console.log(this.exchangeId)
       });
   }
 

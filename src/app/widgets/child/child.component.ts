@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ImageType } from 'src/app/image/image.service';
@@ -11,7 +11,7 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
   templateUrl: './child.component.html',
   styleUrls: ['./child.component.scss']
 })
-export class ChildComponent implements AfterViewInit, OnDestroy {
+export class ChildComponent implements OnInit, OnDestroy {
   @Input() child:Child|null = null 
   pictureUrl: string = ''
   @Output() url = new EventEmitter<string>();
@@ -22,7 +22,7 @@ export class ChildComponent implements AfterViewInit, OnDestroy {
     private _dialog: MatDialog
   ) { }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.pictureUrl = this.child!!.pictureUrl;
   }
 

@@ -106,7 +106,7 @@ export class ExchangeService {
   }
 
   async saveExchangeDetails(exchange: Exchange) {
-    const existing = await getDocs(query(this._exchangesCollection));
+    const existing = await getDocs(query(this._exchangesCollection).withConverter(exchangeConverter));
     const batch = writeBatch(this.firestore);
     const docRef = (!existing.empty) ? existing.docs[0].ref : doc(this._exchangesCollection);
     const updatedExchange = new Exchange(docRef.id, exchange.assignedPeople, exchange.familyMembersBuyingForChildren, exchange.numberOfGiftsPerFamilyMember, exchange.participatingChildren, exchange.participatingFamilyMembers, exchange.year);
@@ -117,6 +117,10 @@ export class ExchangeService {
     });
     batch.set(docRef, exchangeConverter.toFirestore(updatedExchange));
     await batch.commit();
+    if(!existing.empty){
+      const prevExchangeDetails = existing.docs[0].data()
+      this.deletePreviousExchangeDetails(updatedExchange.id,prevExchangeDetails.participatingFamilyMembers.filter(id => !(exchange.participatingFamilyMembers.includes(id))))
+    }
   }
 
   async setItemWantedPurchased(item: ItemWanted) {
@@ -142,6 +146,15 @@ export class ExchangeService {
 
   private assignChild(eligibleChildren: string[]): string {
     return eligibleChildren[Math.floor(Math.random() * eligibleChildren.length)];
+  }
+
+  private async deletePreviousExchangeDetails(exchangeId:string,familyMembers:string[]){
+    const batch = writeBatch(this.firestore);
+    familyMembers.forEach((familyMemberId) => {
+      const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPath.exchanges}/${exchangeId}`;
+      batch.delete(doc(this.firestore,path));
+    });
+    await batch.commit();
   }
 
   private async getChildrenOfThoseBuyingForChildren(buyingForChildren: string[]): Promise<Map<string, string[]>> {

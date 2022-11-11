@@ -1,7 +1,8 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { UserService } from 'src/app/user/user.service';
 import { Child } from 'src/models/child';
@@ -16,10 +17,12 @@ enum State{
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements AfterViewInit {
+export class ProfileComponent implements AfterViewInit,OnDestroy {
   hasAnsweredHasChildren = false;
   hasChildren = false;
   isLoading = true;
+  isGettingChildren = true;
+  isSettingUpReview = false;
   State = State;
   state = State.FORM;
   step = 1;
@@ -28,18 +31,25 @@ export class ProfileComponent implements AfterViewInit {
   detailsForm = new FormGroup({
     name: new FormControl('', Validators.required),
     isMarried: new FormControl("", Validators.required),
-    children: new FormControl([])
+    children: new FormControl<string[]>([])
   });
+  
+  private _routeSubscription: Subscription|null = null;
 
   constructor(
     private _authService: AuthenticationService,
+    private _route: ActivatedRoute,
     private _router: Router,
     private _snackBar: MatSnackBar,
     private _userService: UserService,
-  ) { }
+  ) {}
 
   ngAfterViewInit(): void {
-    this.setChildren()
+    this.setup()
+  }
+
+  ngOnDestroy(): void {
+    this._routeSubscription?.unsubscribe();
   }
 
   editForm(){
@@ -65,7 +75,6 @@ export class ProfileComponent implements AfterViewInit {
     this.hasAnsweredHasChildren = true
     this.hasChildren = hasChildren;
     if (hasChildren) {
-      this.observeChildren()
       this.step++;
     } else {
       this.step += 2;
@@ -109,8 +118,31 @@ export class ProfileComponent implements AfterViewInit {
     });
   }
 
-  private async setChildren() {
+  private async setup() {
+    this.observeChildren()
     this.children = await this._userService.getAllChildren();
-    this.isLoading = false;
+    this.isGettingChildren = false;
+    this.isLoading = this.isSettingUpReview;
+    this._routeSubscription = this._route.paramMap.subscribe((paramMap:ParamMap) => {
+      if(paramMap.get('id')){
+        this.isSettingUpReview = true;
+        this._userService.getUserDetails(paramMap.get('id') as string)
+        this.setupReview();
+      }
+    });
+  }
+
+  private async setupReview(){
+    this._userService.user$.subscribe((user) => {
+      if(user != null){
+        this.hasChildren = (user.childrenIds.length > 0)
+        this.detailsForm.controls.name.setValue(user.name);
+        this.detailsForm.controls.isMarried.setValue((user.isMarried)? 'true' : 'false');
+        this.detailsForm.controls.children.setValue(user.childrenIds)
+        this.state = State.REVIEW;
+        this.isSettingUpReview = false;
+        this.isLoading = this.isGettingChildren;
+      }
+    });
   }
 }

@@ -4,7 +4,7 @@
         <mat-toolbar>
             <img [matMenuTriggerFor]="logout" style="border-radius:50%; border: 5px solid #fef6e5; height: 48px;"
                 class="horizontal-space" [src]="user?.pictureUrl" />
-            <span *ngIf="(exchanges.length < 1)">Not Added To A Family Gifts Exchange Yet</span>
+            <span *ngIf="(exchanges.length < 1) && !isLoading">Not Added To A Family Gifts Exchange Yet</span>
             <span *ngIf="(exchanges.length >= 1)">
                 {{selectedExchange?.year}} Mante Family Gifts Exchange
                 <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="dropdown for years">
@@ -17,6 +17,7 @@
             </mat-menu>
             <mat-menu #logout="matMenu">
                 <button mat-menu-item (click)="onUpdateImage()">Change picture</button>
+                <button mat-menu-item (click)="onEditProfile()">Profile</button>
                 <button mat-menu-item (click)="onSignOut()">Logout</button>
             </mat-menu>
         </mat-toolbar>
