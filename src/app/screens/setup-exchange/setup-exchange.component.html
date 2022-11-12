@@ -107,14 +107,18 @@
         </div>
     </div>
     <div class="mdc-layout-grid__inner">
-        <p *ngIf="(step > 1)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+        <p *ngIf="(step > 1) || (state == State.REVIEW)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
             <button type="button" mat-icon-button aria-label="Next question" (click)="editForm()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
         </p>
-        <p *ngIf="(step == 4)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
+        <p *ngIf="(step == 4) || (state == State.REVIEW)" style="text-align: center;" class="mdc-layout-grid__cell--span-12">
             <button type="button" mat-flat-button color="primary" aria-label="Setup"
                 (click)="setupExchange()">Setup</button>
         </p>
     </div>
 </section>
+
+<!-- <mat-grid-list cols="3" rowHeight="42px">
+    <mat-grid-tile *ngFor="let u of familyMembers">{{u.name}}</mat-grid-tile>
+</mat-grid-list> -->

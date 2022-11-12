@@ -21,7 +21,8 @@ export class ExchangeService {
     this._usersRefCollection = collection(firestore, FirestoreCollectionPath.users);
   }
 
-  async assignSecretSantas(exchangeId: string): Promise<boolean> {
+  async assignSecretSantas(exchangeId: string): Promise<{adults:string[],child:string|null,person:string}[]|null> {
+    const checkResults:{adults:string[],child:string|null,person:string}[] = []
     const checkAdults = new Map<string, number>()
     const checkChildren = new Map<string, number>()
     await setDoc(doc(this._exchangesCollection, exchangeId), { 'isAssigning': true }, { merge: true });
@@ -30,7 +31,7 @@ export class ExchangeService {
     this.setupValidationChecks(exchange.participatingFamilyMembers, exchange.participatingChildren, checkAdults, checkChildren)
     let adults = exchange.participatingFamilyMembers.flatMap(id => Array(exchange.numberOfGiftsPerFamilyMember).fill(id));
     const numberOfGiftsPerChild = Math.floor(exchange.familyMembersBuyingForChildren.length / exchange.participatingChildren.length);
-    let children = exchange.participatingChildren.flatMap(id => Array(numberOfGiftsPerChild).fill(id));
+    let children = exchange.participatingChildren.flatMap(id => Array<string>(numberOfGiftsPerChild).fill(id));
     const childrenOfThoseBuyingForChildren = await this.getChildrenOfThoseBuyingForChildren(exchange.familyMembersBuyingForChildren);
     exchange.participatingFamilyMembers.forEach((familyMemberId) => {
       const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPath.exchanges}/${exchange.id}`;
@@ -39,23 +40,36 @@ export class ExchangeService {
       assignedAdults.forEach(id => {
         checkAdults.set(id, (checkAdults.get(id)!! + 1));
       });
-      batch.update(doc(this.firestore, path), { 'assignedAdults': assignedAdults })
+      batch.set(doc(this.firestore, path), { 'assignedAdults': assignedAdults },{merge:true})
       if (exchange.familyMembersBuyingForChildren.includes(familyMemberId)) {
         const eligibleChildren = children.filter(id => !(childrenOfThoseBuyingForChildren.get(familyMemberId)!!.includes(id)));
+        if(eligibleChildren.length <= 0){
+          console.log(familyMemberId,"no eligible")
+        }
         const assignedChild = (eligibleChildren.length > 0) ? this.assignChild(eligibleChildren) : null;
+        if(!assignedChild){
+          console.log(familyMemberId,"null assigned")
+        }
         //update checkChildren
-        if (assignedChild != null) checkChildren.set(assignedChild, (checkChildren.get(assignedChild)!! + 1));
-        children = children.filter(id => (id != assignedChild))
-        batch.update(doc(this.firestore, path), { 'assignedChild': assignedChild })
+        if (assignedChild != null){
+          batch.set(doc(this.firestore, path), { 'assignedChild': assignedChild },{merge:true})
+           checkChildren.set(assignedChild, (checkChildren.get(assignedChild)!! + 1));
+           const index = children.indexOf(assignedChild)
+           children.splice(index,1);
+           checkResults.push({adults:assignedAdults,child:assignedChild,person:familyMemberId})
+          }
+      }else{
+        checkResults.push({adults:assignedAdults,child:null,person:familyMemberId})
       }
     });
     if (this.validateAssignments(checkAdults, checkChildren, exchange.numberOfGiftsPerFamilyMember, numberOfGiftsPerChild)) {
       batch.update(doc(this._exchangesCollection, exchangeId), { 'assignedPeople': true, 'isAssigning': false })
       await batch.commit();
-      return true;
+      return checkResults;
     } else {
+      console.log('failed evil')
       await setDoc(doc(this._exchangesCollection, exchangeId), { 'isAssigning': false }, { merge: true });
-      return false;
+      return null;
     }
   }
 
@@ -124,8 +138,11 @@ export class ExchangeService {
       const path = `${this._usersRefCollection.path}/${familyMemberId}/${FirestoreCollectionPath.exchanges}/${docRef.id}`;
       batch.set(doc(this.firestore, path), updatedExchangeSubDetails);
     });
-    batch.set(docRef, exchangeConverter.toFirestore(updatedExchange));
-    await batch.commit();
+    if(!existing.empty)
+      batch.update(docRef, exchangeConverter.toFirestore(updatedExchange));
+    else
+    batch.set(docRef, exchangeConverter.toFirestore(updatedExchange)); 
+    //await batch.commit();
     if (!existing.empty) {
       const prevExchangeDetails = existing.docs[0].data()
       this.deletePreviousExchangeDetails(updatedExchange.id, prevExchangeDetails.participatingFamilyMembers.filter(id => !(exchange.participatingFamilyMembers.includes(id))))
@@ -184,10 +201,14 @@ export class ExchangeService {
 
   private validateAssignments(checkAdults: Map<string, number>, checkChildren: Map<string, number>, numberOfGifts: number, numberOfGiftsPerChild: number): boolean {
     for (let num of checkAdults.values()) {
-      if (num != numberOfGifts) return false;
+      if (num != numberOfGifts){
+        return false
+      };
     }
     for (let num of checkChildren.values()) {
-      if (num != numberOfGiftsPerChild) return false;
+      if (num != numberOfGiftsPerChild){
+         return false;
+        }
     }
     return true;
   }
