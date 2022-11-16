@@ -59,7 +59,7 @@
             <div *ngIf="isLoadingChild" class="mdc-layout-grid__cell--span-12">
                 <app-loading></app-loading>
             </div>
-            <div style="align-items: center; display: flex; width: 100%;" class="vertical-space">
+            <div style="align-items: center; display: flex; width: 100%;" class="mdc-layout-grid__cell--span-12 vertical-space">
                 <a [href]="assignedChild.pictureUrl"><img [src]="assignedChild.pictureUrl"
                         style="border-radius:50%; border: 5px solid #fef6e5; width: 60px;" class="horizontal-space"
                         alt="Picture of {{assignedChild.name}}"></a>
@@ -73,7 +73,7 @@
             <div class="mdc-layout-grid__cell--span-12 vertical-space" >
                 <button mat-flat-button color="primary" (click)="onAddItemWanted()">Add</button>
             </div>
-            <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12 horizontal-space" style="display:flex; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
+            <div *ngIf="selectedExchange" class="mdc-layout-grid__cell--span-12" style="display:flex; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
                 <app-my-wanted-item *ngFor="let item of itemsWanted" [item]="item"></app-my-wanted-item>
             </div>
         </div>
