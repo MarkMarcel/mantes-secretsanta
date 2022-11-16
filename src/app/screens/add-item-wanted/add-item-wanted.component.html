@@ -23,7 +23,7 @@
         <img style="height: 300px; width:300px" [src]="itemForm.controls.pictureUrl.value" />
     </div>
     <div *ngIf="(step >= 3) && !hasAnsweredHasGoogleMapsLink" class="mdc-layout-grid__inner vertical-space">
-        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Do you have a Google Maps link to a location where
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1">Do you have a link(Google Maps/website) to a location where
             {{itemForm.controls.name.value}} can be bought? </p>
         <span class="mdc-layout-grid__cell--span-12">
             <button type="button" mat-flat-button (click)="setHasGoogleMapsUrl(true)">Yes</button>
@@ -31,11 +31,11 @@
         </span>
     </div>
     <div *ngIf="(step >= 3) && hasGoogleMapsUrl" class="mdc-layout-grid__inner vertical-space">
-        <p class="mdc-layout-grid__cell--span-12 mat-body-1 question-space">Paste the Google Maps link to a location
+        <p class="mdc-layout-grid__cell--span-12 mat-body-1 question-space">Paste the link(Google Maps/website) to a location
             where {{itemForm.controls.name.value}} can be bought
         </p>
         <mat-form-field class="mdc-layout-grid__cell--span-12" appearance="standard">
-            <input type="url" matInput formControlName="googleMapsUrl" placeholder="Google maps link" />
+            <input type="url" matInput formControlName="googleMapsUrl" placeholder="link" />
         </mat-form-field>
     </div>
     <div class="mdc-layout-grid__inner">

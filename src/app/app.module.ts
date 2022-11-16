@@ -41,6 +41,7 @@ import { AddItemWantedComponent } from './screens/add-item-wanted/add-item-wante
 import { MyWantedItemComponent } from './widgets/my-wanted-item/my-wanted-item.component';
 import { ItemsWantedComponent } from './widgets/items-wanted/items-wanted.component';
 import { ItemWantedComponent } from './widgets/item-wanted/item-wanted.component';
+import { CheckResultsComponent } from './widgets/check-results/check-results.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { ItemWantedComponent } from './widgets/item-wanted/item-wanted.component
     MyWantedItemComponent,
     ItemsWantedComponent,
     ItemWantedComponent,
+    CheckResultsComponent,
   ],
   imports: [
     BrowserModule,

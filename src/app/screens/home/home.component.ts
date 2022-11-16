@@ -10,6 +10,7 @@ import { ExchangeService } from 'src/app/exchange/exchange.service';
 import { PersonPlaceHolderUrl } from 'src/app/firebase-paths';
 import { ImageType } from 'src/app/image/image.service';
 import { UserService } from 'src/app/user/user.service';
+import { CheckResultsComponent } from 'src/app/widgets/check-results/check-results.component';
 import { ImageUploadComponent } from 'src/app/widgets/image-upload/image-upload.component';
 import { SantaComponent } from 'src/app/widgets/santa/santa.component';
 import { Child } from 'src/models/child';
@@ -34,7 +35,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   isLoading = true;
   isLoadingAdults = false;
   isLoadingChild = false;
-  itemsWanted:ItemWanted[] = [];
+  itemsWanted: ItemWanted[] = [];
   PersonPlaceHolderUrl = PersonPlaceHolderUrl;
   reloadRequired = false;
   selectedAdminExchange: Exchange | null | undefined = null;
@@ -46,7 +47,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   private _assigningDialogRef: MatDialogRef<SantaComponent> | null = null;
   private _dialogRef: Subscription | null = null;
-  private _itemsWantedSubscription:Subscription|null = null;
+  private _itemsWantedSubscription: Subscription | null = null;
   private _userSubscription: Subscription | null = null;
 
   constructor(
@@ -69,20 +70,32 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.checkUserRegistration();
   }
 
-  onAddItemWanted(){
-    this._router.navigate([RoutePaths.addItemWanted,this.selectedExchange!!.id]);
+  onAddItemWanted() {
+    this._router.navigate([RoutePaths.addItemWanted, this.selectedExchange!!.id]);
   }
 
   async onAssignPeople() {
-    const assigned = await this._exchangeService.assignSecretSantas(this.selectedAdminExchange!!.id);
-    if (!assigned) {
+    try {
+      const assigned = await this._exchangeService.assignSecretSantas(this.selectedAdminExchange!!.id);
+      if (!assigned) {
+        this._assigningDialogRef?.close();
+        this._snackbar.open('Failed to assign people');
+      }else{
+        this._dialog.open(CheckResultsComponent, { data: assigned })
+      }
+    } catch (error) {
       this._assigningDialogRef?.close();
       this._snackbar.open('Failed to assign people');
+      console.log(error)
     }
   }
 
-  onEditProfile(){
-    this._router.navigate([RoutePaths.editProfile,this.user!!.id]);
+  onEditProfile() {
+    this._router.navigate([RoutePaths.editProfile, this.user!!.id]);
+  }
+
+  onReviewExchangeDetails() {
+    this._router.navigate([RoutePaths.setupExchange, this.selectedAdminExchange!!.id]);
   }
 
   onUpdateImage() {
@@ -149,14 +162,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async setupSelectedExchange() {
-    if (this.isAdmin){
+    if (this.isAdmin) {
       this.selectedAdminExchange = this.adminExchanges.find((exchange) => (exchange.id == this.selectedExchange!!.id));
     }
     if (this.unsubscribe != null)
       this.unsubscribe();
-      this._itemsWantedSubscription?.unsubscribe();
+    this._itemsWantedSubscription?.unsubscribe();
     this.unsubscribe = this._exchangeService.observeExchange(this.selectedExchange!!.id, (isAssigning) => {
-      if (this.isAssigning && !isAssigning){
+      if (this.isAssigning && !isAssigning) {
         this._snackbar.open('Successfull assigned everyone!!');
         this.setup();
       }
@@ -167,7 +180,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         this._assigningDialogRef?.close();
       }
     });
-    this._itemsWantedSubscription = this._exchangeService.observeItemsWanted(this.selectedExchange!!.id,this.user!!.id).subscribe(items => {
+    this._itemsWantedSubscription = this._exchangeService.observeItemsWanted(this.selectedExchange!!.id, this.user!!.id).subscribe(items => {
       this.itemsWanted = items
     })
     this.getExchangeData();

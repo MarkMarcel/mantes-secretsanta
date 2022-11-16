@@ -1,0 +1,15 @@
+<div class="vertical-space" style="width: 100%;">
+    <button mat-icon-button (click)="close()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<app-loading *ngIf="isLoading"></app-loading>
+<div class="mdc-layout-grid" style="height: 70vh;">
+    <div class="mdc-layout-grid__inner">
+        <div *ngFor="let result of checkResults" class="mdc-layout-grid__cell--span-12">
+            <h4 class="mdc-layout-grid__cell--span-12 mat-h3">{{result.person.name}}</h4>
+            <p class="mat-body1 vertical-space" *ngFor="let adult of result.adults">{{adult.name}}</p>
+            <p *ngIf="result.child" class="mat-body1">{{result.child.name}}</p>
+        </div>
+    </div>
+</div>

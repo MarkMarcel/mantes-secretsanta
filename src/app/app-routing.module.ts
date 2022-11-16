@@ -25,6 +25,7 @@ const routes: Routes = [
   { path: RoutePaths.addItemWanted + ":exchangeId", component: AddItemWantedComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin }, title: 'Add Item Wanted' },
   { path: RoutePaths.editProfile + ":id", component: ProfileComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin }, title: 'Edit Profile' },
   { path: RoutePaths.profile, component: ProfileComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin }, title: 'Setup Profile' },
+  { path: RoutePaths.setupExchange + "/:id", component: SetupExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin }, title: 'Setup Gifts Exchange' },
   { path: RoutePaths.setupExchange, component: SetupExchangeComponent, canActivate: [AuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin }, title: 'Setup Gifts Exchange' },
 ];
 
