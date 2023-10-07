@@ -142,7 +142,7 @@ export class ExchangeService {
       batch.update(docRef, exchangeConverter.toFirestore(updatedExchange));
     else
     batch.set(docRef, exchangeConverter.toFirestore(updatedExchange)); 
-    //await batch.commit();
+    await batch.commit();
     if (!existing.empty) {
       const prevExchangeDetails = existing.docs[0].data()
       this.deletePreviousExchangeDetails(updatedExchange.id, prevExchangeDetails.participatingFamilyMembers.filter(id => !(exchange.participatingFamilyMembers.includes(id))))
