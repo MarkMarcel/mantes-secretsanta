@@ -20,6 +20,7 @@ enum State {
 })
 export class SetupExchangeComponent implements AfterViewInit,OnDestroy {
   children: Child[] = [];
+  exchangeId = '';
   familyMembers: User[] = [];
   isLoading = true;
   isSettingUpReview = false;
@@ -63,6 +64,10 @@ export class SetupExchangeComponent implements AfterViewInit,OnDestroy {
     this.step--;
   }
 
+  getRandomInt(max:number):number {
+    return Math.floor(Math.random() * max);
+  }
+
   async setupExchange() {
     if (this.isValidForm()) {
       this.isLoading = true
@@ -70,7 +75,7 @@ export class SetupExchangeComponent implements AfterViewInit,OnDestroy {
       const numberOfGifts = this.manteSecretSantaExchangeForm.controls.numberOfGifts.value!!;
       const participatingChildren = this.manteSecretSantaExchangeForm.controls.children.value!!;
       const participatingFamilyMembers = this.manteSecretSantaExchangeForm.controls.participating.value!!;
-      const exchange = new Exchange('', false, buyingForChildren, parseInt(numberOfGifts), participatingChildren, participatingFamilyMembers, this.year.toString());
+      const exchange = new Exchange(this.exchangeId, false, buyingForChildren, parseInt(numberOfGifts), participatingChildren, participatingFamilyMembers, this.year.toString());
       await this._exchangeService.saveExchangeDetails(exchange);
       this.isLoading = false;
       this._router.navigate(['']);
@@ -152,6 +157,7 @@ export class SetupExchangeComponent implements AfterViewInit,OnDestroy {
   }
 
   private async setupReview(exchangeId: string) {
+    this.exchangeId = exchangeId;
     try {
       const exchange = await this._exchangeService.getExchange(exchangeId);
       if(exchange != null){
